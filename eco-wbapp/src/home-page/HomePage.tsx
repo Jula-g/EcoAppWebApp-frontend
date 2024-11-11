@@ -28,7 +28,7 @@ function HomePage() {
     <>
       <Box
         sx={{
-          backgroundColor: 'red',
+          backgroundColor: '#bdbcb9',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -40,7 +40,7 @@ function HomePage() {
 
         <Box
           sx={{
-            backgroundColor: 'green',
+            backgroundColor: '#7a7a79',
             padding: '20px',
             width: '100%',
             maxWidth: '85%',
@@ -52,8 +52,8 @@ function HomePage() {
         >
           <Box
             sx={{
-              backgroundColor: 'yellow',
-              width: '20%',
+              backgroundColor: '#4f4f4d',
+              width: '25%',
               minHeight: '100px',
             }}
           >
@@ -101,8 +101,8 @@ function HomePage() {
 
           <Box
             sx={{
-              backgroundColor: 'blue',
-              width: '80%',
+              backgroundColor: '#363632',
+              width: '75%',
               padding: '20px',
             }}
           >
