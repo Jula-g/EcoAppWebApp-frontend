@@ -3,8 +3,19 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useNavigate } from 'react-router-dom';
 
 function MenuAppBar() {
+  const navigate = useNavigate();
+
+  const navigateToLogin = () => {
+    navigate('/login');
+  };
+
+  const navigateToCart = () => {
+    navigate('/cart');
+  };
+
   return (
     <AppBar
       sx={{
@@ -27,7 +38,7 @@ function MenuAppBar() {
           <IconButton
             color="inherit"
             aria-label="login"
-            onClick={() => console.log('Login clicked')}
+            onClick={() => navigateToLogin()}
           >
             <PersonIcon />
           </IconButton>
@@ -36,7 +47,7 @@ function MenuAppBar() {
           <IconButton
             color="inherit"
             aria-label="basket"
-            onClick={() => console.log('Basket clicked')}
+            onClick={() => navigateToCart()}
           >
             <ShoppingCartIcon />
           </IconButton>

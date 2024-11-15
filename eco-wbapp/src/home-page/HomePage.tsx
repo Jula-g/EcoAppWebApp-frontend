@@ -58,7 +58,12 @@ function HomePage() {
             }}
           >
             <List
-              sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+              sx={{
+                width: '260px',
+
+                bgcolor: 'background.paper',
+                position: 'fixed',
+              }}
               component="nav"
               aria-labelledby="nested-list-subheader"
               subheader={

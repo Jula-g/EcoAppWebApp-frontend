@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { useMemo } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -38,65 +38,83 @@ function LoginForm() {
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '100vh',
+          backgroundColor: '#bdbcb9',
         }}
       >
-        <Formik
-          initialValues={{ username: '', password: '' }}
-          onSubmit={onSubmit}
-          validationSchema={validationSchema}
-          validateOnChange
-          validateOnBlur
+        <Box
+          sx={{
+            backgroundColor: '#7a7a79',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          {(formik) => (
-            <form
-              className="Login-form"
-              id="signinform"
-              onSubmit={formik.handleSubmit}
-              noValidate
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '16px',
-              }}
-            >
-              <TextField
-                id="username"
-                label="Username"
-                variant="filled"
-                type="text"
-                color="primary"
-                name="username"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.username && !!formik.errors.username}
-                helperText={formik.touched.username && formik.errors.username}
-                sx={{ width: '300px' }}
-              />
-              <TextField
-                id="password"
-                label="Password"
-                variant="filled"
-                type="password"
-                name="password"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.password && !!formik.errors.password}
-                helperText={formik.touched.password && formik.errors.password}
-                sx={{ width: '300px' }}
-              />
-              <Button
-                color="success"
-                type="submit"
-                variant="contained"
-                disabled={!(formik.isValid && formik.dirty)}
-                sx={{ width: '300px' }}
+          <Formik
+            initialValues={{ username: '', password: '' }}
+            onSubmit={onSubmit}
+            validationSchema={validationSchema}
+            validateOnChange
+            validateOnBlur
+          >
+            {(formik) => (
+              <form
+                className="Login-form"
+                id="signinform"
+                onSubmit={formik.handleSubmit}
+                noValidate
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '16px',
+                }}
               >
-                Log In
-              </Button>
-            </form>
-          )}
-        </Formik>
+                <Typography
+                  style={{
+                    fontSize: '38px',
+                    color: 'black',
+                  }}
+                >
+                  Login
+                </Typography>
+
+                <TextField
+                  id="username"
+                  label="Username"
+                  variant="filled"
+                  type="text"
+                  color="primary"
+                  name="username"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.username && !!formik.errors.username}
+                  helperText={formik.touched.username && formik.errors.username}
+                  sx={{ width: '300px' }}
+                />
+                <TextField
+                  id="password"
+                  label="Password"
+                  variant="filled"
+                  type="password"
+                  name="password"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.password && !!formik.errors.password}
+                  helperText={formik.touched.password && formik.errors.password}
+                  sx={{ width: '300px' }}
+                />
+                <Button
+                  color="success"
+                  type="submit"
+                  variant="contained"
+                  disabled={!(formik.isValid && formik.dirty)}
+                  sx={{ width: '300px' }}
+                >
+                  Log In
+                </Button>
+              </form>
+            )}
+          </Formik>
+        </Box>
       </Box>
     </>
   );
