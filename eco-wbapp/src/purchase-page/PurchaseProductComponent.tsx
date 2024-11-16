@@ -12,19 +12,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { Purchase, PurchaseProductComponentProps } from '../ProductInterface';
 
-interface Purchase {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-interface PurchaseProductComponentProps {
-  purchases: Purchase[];
-  setPurchases: React.Dispatch<React.SetStateAction<Purchase[]>>;
-}
 export default function PurchaseProductComponent({
   purchases,
   setPurchases,

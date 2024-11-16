@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { useMemo } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -38,82 +38,128 @@ function LoginForm() {
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '100vh',
-          backgroundColor: '#bdbcb9',
+          backgroundColor: 'white',
         }}
       >
         <Box
           sx={{
-            backgroundColor: '#7a7a79',
+            backgroundColor: 'white',
             justifyContent: 'center',
             alignItems: 'center',
+            minHeight: '100vh',
+            width: '1200px',
           }}
         >
-          <Formik
-            initialValues={{ username: '', password: '' }}
-            onSubmit={onSubmit}
-            validationSchema={validationSchema}
-            validateOnChange
-            validateOnBlur
+          <Typography
+            sx={{
+              fontSize: '38px',
+              color: 'black',
+              paddingLeft: '55px',
+              marginTop: '20px',
+            }}
           >
-            {(formik) => (
-              <form
-                className="Login-form"
-                id="signinform"
-                onSubmit={formik.handleSubmit}
-                noValidate
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '16px',
-                }}
-              >
-                <Typography
+            EcoApp
+          </Typography>
+          <Divider
+            sx={{ marginTop: '20px', marginBottom: '20px', width: '100%' }}
+          />
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              backgroundColor: 'white',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '38px',
+                color: 'black',
+                marginTop: '20px',
+              }}
+            >
+              Login
+            </Typography>
+            <Divider sx={{ width: '300px', marginBottom: '20px' }} />
+            <Formik
+              initialValues={{ username: '', password: '' }}
+              onSubmit={onSubmit}
+              validationSchema={validationSchema}
+              validateOnChange
+              validateOnBlur
+            >
+              {(formik) => (
+                <form
+                  id="signinform"
+                  onSubmit={formik.handleSubmit}
+                  noValidate
                   style={{
-                    fontSize: '38px',
-                    color: 'black',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '16px',
                   }}
                 >
-                  Login
-                </Typography>
+                  <TextField
+                    id="username"
+                    label="Username"
+                    variant="filled"
+                    type="text"
+                    color="primary"
+                    name="username"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.username && !!formik.errors.username}
+                    helperText={
+                      formik.touched.username && formik.errors.username
+                    }
+                    sx={{ width: '300px' }}
+                  />
+                  <TextField
+                    id="password"
+                    label="Password"
+                    variant="filled"
+                    type="password"
+                    name="password"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.password && !!formik.errors.password}
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
+                    sx={{ width: '300px' }}
+                  />
 
-                <TextField
-                  id="username"
-                  label="Username"
-                  variant="filled"
-                  type="text"
-                  color="primary"
-                  name="username"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.username && !!formik.errors.username}
-                  helperText={formik.touched.username && formik.errors.username}
-                  sx={{ width: '300px' }}
-                />
-                <TextField
-                  id="password"
-                  label="Password"
-                  variant="filled"
-                  type="password"
-                  name="password"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.password && !!formik.errors.password}
-                  helperText={formik.touched.password && formik.errors.password}
-                  sx={{ width: '300px' }}
-                />
-                <Button
-                  color="success"
-                  type="submit"
-                  variant="contained"
-                  disabled={!(formik.isValid && formik.dirty)}
-                  sx={{ width: '300px' }}
-                >
-                  Log In
-                </Button>
-              </form>
-            )}
-          </Formik>
+                  <Button
+                    color="success"
+                    type="submit"
+                    variant="contained"
+                    disabled={!(formik.isValid && formik.dirty)}
+                    sx={{ width: '300px' }}
+                  >
+                    Log In
+                  </Button>
+                  <Divider sx={{ width: '300px', marginBottom: '20px' }} />
+                  <Typography
+                    sx={{
+                      fontSize: '16px',
+                      color: 'black',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    Don't have an account?{' '}
+                    <a href="/signup" style={{ color: 'black' }}>
+                      Sign up
+                    </a>
+                  </Typography>
+                </form>
+              )}
+            </Formik>
+            <Divider sx={{ width: '100%', marginBottom: '20px' }} />
+          </Box>
         </Box>
       </Box>
     </>
