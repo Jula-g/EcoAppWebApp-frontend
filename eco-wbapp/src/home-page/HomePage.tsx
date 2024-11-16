@@ -16,6 +16,7 @@ import ChairIcon from '@mui/icons-material/Chair';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import MapIcon from '@mui/icons-material/Map';
 import Swiper from './Swiper';
+import CatSelectComponent from './CatSelectComponent';
 
 function HomePage() {
   const [open, setOpen] = React.useState(true);
@@ -60,9 +61,7 @@ function HomePage() {
             <List
               sx={{
                 width: '260px',
-
                 bgcolor: 'background.paper',
-                position: 'fixed',
               }}
               component="nav"
               aria-labelledby="nested-list-subheader"
@@ -111,6 +110,7 @@ function HomePage() {
               padding: '20px',
             }}
           >
+            <CatSelectComponent />
             <Swiper />
           </Box>
         </Box>

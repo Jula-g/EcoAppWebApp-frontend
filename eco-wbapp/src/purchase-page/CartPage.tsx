@@ -1,8 +1,19 @@
-import { Box } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import PurchaseProductComponent from './PurchaseProductComponent';
 import PurchaseNavBar from './PurchaseNavBar';
+import products from '../products';
 
 export default function PurchaseListComponent() {
+  // Move purchases state here
+  const [purchases, setPurchases] = useState(products);
+
+  // Calculate the total amount
+  const totalAmount = purchases.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
   return (
     <Box
       sx={{
@@ -35,7 +46,10 @@ export default function PurchaseListComponent() {
             marginRight: '40px',
           }}
         >
-          <PurchaseProductComponent />
+          <PurchaseProductComponent
+            purchases={purchases}
+            setPurchases={setPurchases}
+          />
         </Box>
         <Box
           sx={{
@@ -43,7 +57,16 @@ export default function PurchaseListComponent() {
             width: '35%',
             padding: '20px',
           }}
-        ></Box>
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'white',
+            }}
+          >
+            Total: ${totalAmount.toFixed(2)}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

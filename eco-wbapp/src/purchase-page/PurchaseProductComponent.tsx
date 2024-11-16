@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Card,
@@ -13,39 +13,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-export default function PurchaseProductComponent() {
-  const [purchases, setPurchases] = useState([
-    {
-      id: 1,
-      name: 'Product 1',
-      price: 10,
-      quantity: 1,
-      image:
-        'https://m.media-amazon.com/images/I/81nyYcdA+HL._AC_UF894,1000_QL80_.jpg',
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      price: 20,
-      quantity: 1,
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: 3,
-      name: 'Product 3',
-      price: 30,
-      quantity: 1,
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: 4,
-      name: 'Product 4',
-      price: 40,
-      quantity: 1,
-      image: 'https://via.placeholder.com/150',
-    },
-  ]);
+interface Purchase {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
+interface PurchaseProductComponentProps {
+  purchases: Purchase[];
+  setPurchases: React.Dispatch<React.SetStateAction<Purchase[]>>;
+}
+export default function PurchaseProductComponent({
+  purchases,
+  setPurchases,
+}: PurchaseProductComponentProps) {
   const handleIncreaseQuantity = (id: number) => {
     setPurchases((prev) =>
       prev.map((item) =>
