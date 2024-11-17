@@ -29,7 +29,7 @@ function HomePage() {
     <>
       <Box
         sx={{
-          backgroundColor: '#bdbcb9',
+          backgroundColor: '#e8e8eb',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -41,7 +41,6 @@ function HomePage() {
 
         <Box
           sx={{
-            backgroundColor: '#7a7a79',
             padding: '20px',
             width: '100%',
             maxWidth: '85%',
@@ -53,7 +52,6 @@ function HomePage() {
         >
           <Box
             sx={{
-              backgroundColor: '#4f4f4d',
               width: '25%',
               minHeight: '100px',
             }}
@@ -61,12 +59,16 @@ function HomePage() {
             <List
               sx={{
                 width: '260px',
-                bgcolor: 'background.paper',
+                bgcolor: '#e8e8eb',
               }}
               component="nav"
               aria-labelledby="nested-list-subheader"
               subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
+                <ListSubheader
+                  component="div"
+                  id="nested-list-subheader"
+                  sx={{ backgroundColor: '#e8e8eb' }}
+                >
                   Kategorie
                 </ListSubheader>
               }
@@ -105,12 +107,32 @@ function HomePage() {
 
           <Box
             sx={{
-              backgroundColor: '#363632',
               width: '75%',
               padding: '20px',
             }}
           >
             <CatSelectComponent />
+            <Typography
+              variant="h4"
+              sx={{
+                color: 'black',
+                marginBottom: '20px',
+                fontFamily: 'Poppins',
+              }}
+            >
+              Recommended
+            </Typography>
+            <Swiper />
+            <Typography
+              variant="h4"
+              sx={{
+                color: 'black',
+                marginBottom: '20px',
+                fontFamily: 'Poppins',
+              }}
+            >
+              Bestsellers
+            </Typography>
             <Swiper />
           </Box>
         </Box>

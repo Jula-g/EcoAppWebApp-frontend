@@ -19,20 +19,27 @@ const CatSelectComponent: React.FC = () => {
 
   return (
     <>
-      <Typography
-        variant="h4"
-        sx={{ color: 'white', textAlign: 'center', marginBottom: '20px' }}
-      >
-        Categories
-      </Typography>
       <Card
         sx={{
-          maxWidth: '800px',
+          maxWidth: '100%',
+          padding: '30px',
           margin: 'auto',
-          backgroundColor: '#363632',
+          backgroundColor: '#c9c9c9',
           boxShadow: 'none',
+          borderRadius: '20px',
         }}
       >
+        <Typography
+          variant="h4"
+          sx={{
+            color: 'BLACK',
+            textAlign: 'center',
+            marginBottom: '20px',
+            fontFamily: 'Poppins',
+          }}
+        >
+          Categories
+        </Typography>
         <Box
           sx={{
             display: 'grid',
@@ -76,9 +83,10 @@ const CatSelectComponent: React.FC = () => {
               <Typography
                 variant="h6"
                 sx={{
-                  color: 'white',
+                  color: 'black',
                   textAlign: 'center',
                   marginTop: '10px',
+                  fontFamily: 'Poppins',
                 }}
               >
                 {name}

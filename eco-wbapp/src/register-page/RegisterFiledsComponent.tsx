@@ -1,18 +1,20 @@
 import React, { useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { Formik } from 'formik';
 import { useMemo } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Typography } from '@mui/material';
 
-function LoginForm() {
+function RegisterForm() {
   const navigate = useNavigate();
 
   const onSubmit = useCallback(
     async (values: any) => {
-      console.log('Form data', values);
+      console.log('Registration data', values);
       navigate('/');
     },
     [navigate]
@@ -25,11 +27,25 @@ function LoginForm() {
   const validationSchema = useMemo(
     () =>
       yup.object().shape({
-        username: yup.string().required('Username is required'),
+        email: yup
+          .string()
+          .email('Invalid email format')
+          .required('Email is required'),
         password: yup
           .string()
           .required('Password is required')
-          .min(3, 'Password too short'),
+          .min(8, 'Password must be at least 8 characters long'),
+        confirmPassword: yup
+          .string()
+          .oneOf([yup.ref('password')], 'Passwords must match')
+          .required('Please confirm your password'),
+        dateOfBirth: yup
+          .date()
+          .required('Date of Birth is required')
+          .typeError('Invalid date format'),
+        termsAccepted: yup
+          .boolean()
+          .oneOf([true], 'You must accept the terms and conditions'),
       }),
     []
   );
@@ -87,11 +103,17 @@ function LoginForm() {
                 marginTop: '20px',
               }}
             >
-              Login
+              Register
             </Typography>
             <Divider sx={{ width: '300px', marginBottom: '20px' }} />
             <Formik
-              initialValues={{ username: '', password: '' }}
+              initialValues={{
+                email: '',
+                password: '',
+                confirmPassword: '',
+                dateOfBirth: '',
+                termsAccepted: false,
+              }}
               onSubmit={onSubmit}
               validationSchema={validationSchema}
               validateOnChange
@@ -99,7 +121,7 @@ function LoginForm() {
             >
               {(formik) => (
                 <form
-                  id="signinform"
+                  id="registerform"
                   onSubmit={formik.handleSubmit}
                   noValidate
                   style={{
@@ -110,18 +132,15 @@ function LoginForm() {
                   }}
                 >
                   <TextField
-                    id="username"
-                    label="Username"
+                    id="email"
+                    label="Email"
                     variant="filled"
-                    type="text"
-                    color="primary"
-                    name="username"
+                    type="email"
+                    name="email"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.username && !!formik.errors.username}
-                    helperText={
-                      formik.touched.username && formik.errors.username
-                    }
+                    error={formik.touched.email && !!formik.errors.email}
+                    helperText={formik.touched.email && formik.errors.email}
                     sx={{ width: '300px' }}
                   />
                   <TextField
@@ -138,6 +157,64 @@ function LoginForm() {
                     }
                     sx={{ width: '300px' }}
                   />
+                  <TextField
+                    id="confirmPassword"
+                    label="Repeat Password"
+                    variant="filled"
+                    type="password"
+                    name="confirmPassword"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.confirmPassword &&
+                      !!formik.errors.confirmPassword
+                    }
+                    helperText={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                    }
+                    sx={{ width: '300px' }}
+                  />
+                  <TextField
+                    id="dateOfBirth"
+                    label="Date of Birth"
+                    variant="filled"
+                    type="date"
+                    InputLabelProps={{ shrink: true }}
+                    name="dateOfBirth"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.dateOfBirth && !!formik.errors.dateOfBirth
+                    }
+                    helperText={
+                      formik.touched.dateOfBirth && formik.errors.dateOfBirth
+                    }
+                    sx={{ width: '300px' }}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        id="termsAccepted"
+                        name="termsAccepted"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        checked={formik.values.termsAccepted}
+                      />
+                    }
+                    label="I accept the terms and conditions"
+                  />
+                  {formik.touched.termsAccepted &&
+                    !!formik.errors.termsAccepted && (
+                      <Typography color="error" variant="caption">
+                        {formik.errors.termsAccepted}
+                      </Typography>
+                    )}
+                  <Typography variant="caption" sx={{ width: '300px' }}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Praesent malesuada quam vel nibh facilisis, et vulputate
+                    nisl tempor.
+                  </Typography>
 
                   <Button
                     color="success"
@@ -146,7 +223,7 @@ function LoginForm() {
                     disabled={!(formik.isValid && formik.dirty)}
                     sx={{ width: '300px' }}
                   >
-                    Log In
+                    Register
                   </Button>
                   <Divider sx={{ width: '300px', marginBottom: '20px' }} />
                   <Typography
@@ -156,9 +233,9 @@ function LoginForm() {
                       marginBottom: '20px',
                     }}
                   >
-                    Don't have an account?{' '}
-                    <a href="/signup" style={{ color: 'black' }}>
-                      Sign up
+                    Already have an account?{' '}
+                    <a href="/login" style={{ color: 'black' }}>
+                      Log in
                     </a>
                   </Typography>
                 </form>
@@ -172,4 +249,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

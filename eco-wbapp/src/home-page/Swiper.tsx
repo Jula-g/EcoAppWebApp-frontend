@@ -57,7 +57,13 @@ function Swiper() {
       {mockData.map((item) => (
         <Card
           key={item.id}
-          sx={{ maxWidth: '220px', margin: ' 10px', padding: '30px' }}
+          sx={{
+            maxWidth: '220px',
+            margin: ' 10px',
+            padding: '30px',
+            marginBottom: '60px',
+            marginTop: '20px',
+          }}
         >
           <CardMedia
             component="img"
