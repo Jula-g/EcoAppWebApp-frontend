@@ -3,6 +3,7 @@ import { Box, Typography } from '@mui/material';
 import PurchaseProductComponent from './PurchaseProductComponent';
 import PurchaseNavBar from './PurchaseNavBar';
 import products from '../products';
+import CustomizedSteppers from './ProgressComponent';
 
 export default function PurchaseListComponent() {
   // Move purchases state here
@@ -38,6 +39,16 @@ export default function PurchaseListComponent() {
           marginTop: '70px',
         }}
       >
+        <Box
+          sx={{
+            backgroundColor: 'yellow',
+            width: '60%',
+            minHeight: '100px',
+            marginRight: '40px',
+          }}
+        >
+          <CustomizedSteppers />
+        </Box>
         <Box
           sx={{
             backgroundColor: '#4f4f4d',
