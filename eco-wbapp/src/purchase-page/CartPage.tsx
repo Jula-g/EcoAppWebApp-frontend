@@ -6,7 +6,7 @@ import products from '../products';
 import CustomizedSteppers from './ProgressComponent';
 
 export default function PurchaseListComponent() {
-  // Move purchases state here
+  // State for purchases
   const [purchases, setPurchases] = useState(products);
 
   // Calculate the total amount
@@ -24,59 +24,86 @@ export default function PurchaseListComponent() {
         alignItems: 'center',
         minHeight: '100vh',
         padding: '20px',
+        flexDirection: 'column',
       }}
     >
       <PurchaseNavBar />
       <Box
         sx={{
-          backgroundColor: '#7a7a79',
+          backgroundColor: '#1b052b',
           padding: '20px',
           width: '100%',
           maxWidth: '85%',
           minHeight: '100vh',
           margin: 'auto',
-          display: 'flex',
           marginTop: '70px',
+          display: 'flex',
+          borderRadius: '28px',
+          flexDirection: 'column',
         }}
       >
+        {/* Yellow box at the top */}
         <Box
           sx={{
             backgroundColor: 'yellow',
-            width: '60%',
+            width: '100%',
             minHeight: '100px',
-            marginRight: '40px',
+            paddingTop: '40px',
+            borderRadius: '28px',
+            marginBottom: '20px',
           }}
         >
           <CustomizedSteppers />
         </Box>
+
+        {/* Main content with products on the left and total on the right */}
         <Box
           sx={{
-            backgroundColor: '#4f4f4d',
-            width: '60%',
-            minHeight: '100px',
-            marginRight: '40px',
-          }}
-        >
-          <PurchaseProductComponent
-            purchases={purchases}
-            setPurchases={setPurchases}
-          />
-        </Box>
-        <Box
-          sx={{
-            backgroundColor: '#363632',
-            width: '35%',
+            backgroundColor: '#dbcae8',
             padding: '20px',
+            borderRadius: '28px',
           }}
         >
-          <Typography
-            variant="h6"
+          <Box
             sx={{
-              color: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              width: '100%',
+              gap: '20px',
             }}
           >
-            Total: ${totalAmount.toFixed(2)}
-          </Typography>
+            <Box
+              sx={{
+                backgroundColor: '#4f4f4d',
+                width: '65%', // Adjust width as necessary
+                minHeight: '100px',
+                padding: '20px',
+              }}
+            >
+              <PurchaseProductComponent
+                purchases={purchases}
+                setPurchases={setPurchases}
+              />
+            </Box>
+            <Box
+              sx={{
+                backgroundColor: '#363632',
+                width: '30%',
+                padding: '20px',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'white',
+                }}
+              >
+                Total: ${totalAmount.toFixed(2)}
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Box>

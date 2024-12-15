@@ -17,6 +17,7 @@ import FastfoodIcon from '@mui/icons-material/Fastfood';
 import MapIcon from '@mui/icons-material/Map';
 import Swiper from './Swiper';
 import CatSelectComponent from './CatSelectComponent';
+import NavBar from '../menu-bar/NavBar';
 
 function HomePage() {
   const [open, setOpen] = React.useState(true);
@@ -50,7 +51,7 @@ function HomePage() {
             marginTop: '70px',
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               width: '25%',
               minHeight: '100px',
@@ -101,13 +102,13 @@ function HomePage() {
                     <ListItemText primary="Starred" />
                   </ListItemButton>
                 </List> */}
-              </Collapse>
+          {/* </Collapse>
             </List>
-          </Box>
+          </Box> */}
 
           <Box
             sx={{
-              width: '75%',
+              width: '100%',
               padding: '20px',
             }}
           >

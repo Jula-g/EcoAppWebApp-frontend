@@ -22,13 +22,40 @@ function MenuAppBar() {
       sx={{
         backgroundColor: 'black',
         position: 'fixed',
-        height: '80px',
+        height: '160px',
         paddingLeft: '60px',
         paddingRight: '60px',
         paddingBottom: '10px',
         justifyContent: 'center',
       }}
     >
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Left Side - Placeholder for Logo or Title */}
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          EcoApp
+        </Typography>
+
+        {/* Right Side - Icons */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {/* Login Icon */}
+          <IconButton
+            color="inherit"
+            aria-label="login"
+            onClick={() => navigateToLogin()}
+          >
+            <PersonIcon />
+          </IconButton>
+
+          {/* Basket Icon */}
+          <IconButton
+            color="inherit"
+            aria-label="basket"
+            onClick={() => navigateToCart()}
+          >
+            <ShoppingCartIcon />
+          </IconButton>
+        </div>
+      </Toolbar>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {/* Left Side - Placeholder for Logo or Title */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
