@@ -28,6 +28,7 @@ export default function PurchaseListComponent() {
       }}
     >
       <PurchaseNavBar />
+
       <Box
         sx={{
           backgroundColor: '#1b052b',
@@ -42,20 +43,6 @@ export default function PurchaseListComponent() {
           flexDirection: 'column',
         }}
       >
-        {/* Yellow box at the top */}
-        <Box
-          sx={{
-            backgroundColor: 'yellow',
-            width: '100%',
-            minHeight: '100px',
-            paddingTop: '40px',
-            borderRadius: '28px',
-            marginBottom: '20px',
-          }}
-        >
-          <CustomizedSteppers />
-        </Box>
-
         {/* Main content with products on the left and total on the right */}
         <Box
           sx={{

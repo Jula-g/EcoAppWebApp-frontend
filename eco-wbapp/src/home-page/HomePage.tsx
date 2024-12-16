@@ -17,7 +17,6 @@ import FastfoodIcon from '@mui/icons-material/Fastfood';
 import MapIcon from '@mui/icons-material/Map';
 import Swiper from './Swiper';
 import CatSelectComponent from './CatSelectComponent';
-import NavBar from '../menu-bar/NavBar';
 
 function HomePage() {
   const [open, setOpen] = React.useState(true);

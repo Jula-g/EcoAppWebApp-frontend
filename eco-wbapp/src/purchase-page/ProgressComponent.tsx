@@ -165,9 +165,9 @@ function ColorlibStepIcon(props: StepIconProps) {
 }
 
 const steps = [
-  'Select campaign settings',
-  'Create an ad group',
-  'Create an ad',
+  'Add product to cart',
+  'Checkout and Accept Delivery',
+  'Payment',
 ];
 
 export default function CustomizedSteppers() {

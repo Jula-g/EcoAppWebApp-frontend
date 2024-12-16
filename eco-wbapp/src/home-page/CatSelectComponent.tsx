@@ -4,12 +4,16 @@ import foodImage from './images-home-page/food.png';
 import batteryImage from './images-home-page/battery.png';
 import furnitureImage from './images-home-page/furniture.png';
 import clothesImage from './images-home-page/clothes.png';
+import dropPointImage from './images-home-page/drop-point.png';
+import matchImage from './images-home-page/match.png';
 
 const categories = [
   { name: 'Food', image: foodImage },
   { name: 'Battery', image: batteryImage },
   { name: 'Furniture', image: furnitureImage },
   { name: 'Clothes', image: clothesImage },
+  { name: 'Drop-point', image: dropPointImage },
+  { name: 'Match Me', image: matchImage },
 ];
 
 const CatSelectComponent: React.FC = () => {
