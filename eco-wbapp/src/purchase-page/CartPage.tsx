@@ -1,96 +1,81 @@
 import React, { useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import PurchaseProductComponent from './PurchaseProductComponent';
+import { Box } from '@mui/material';
 import PurchaseNavBar from './PurchaseNavBar';
+import CustomizedSteppers from './CustomizedSteppers';
+import ProductSelection from './ProductSelection';
+import DeliveryDetails from './DeliveryDetails';
+import Confirmation from './Confirmation';
 import products from '../products';
-import CustomizedSteppers from './ProgressComponent';
 
 export default function PurchaseListComponent() {
-  // State for purchases
+  const [currentStep, setCurrentStep] = useState(0);
   const [purchases, setPurchases] = useState(products);
+  const [deliveryOption, setDeliveryOption] = useState('');
+  const [userData, setUserData] = useState({
+    name: '',
+    address: '',
+    email: '',
+  });
 
-  // Calculate the total amount
   const totalAmount = purchases.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
+  const handleNext = () => setCurrentStep((prev) => prev + 1);
+  const handleBack = () => setCurrentStep((prev) => prev - 1);
+
   return (
     <Box
-      sx={{
-        backgroundColor: '#bdbcb9',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        padding: '20px',
-        flexDirection: 'column',
-      }}
+      sx={{ backgroundColor: '#f0f0f0', minHeight: '100vh', padding: '20px' }}
     >
       <PurchaseNavBar />
-
       <Box
         sx={{
-          backgroundColor: '#1b052b',
+          backgroundColor: '#f0f0f0',
           padding: '20px',
-          width: '100%',
           maxWidth: '85%',
-          minHeight: '100vh',
-          margin: 'auto',
-          marginTop: '70px',
-          display: 'flex',
+          margin: '70px auto 0',
           borderRadius: '28px',
-          flexDirection: 'column',
         }}
       >
-        {/* Main content with products on the left and total on the right */}
+        <CustomizedSteppers activeStep={currentStep} />
+
         <Box
           sx={{
-            backgroundColor: '#dbcae8',
+            backgroundColor: 'white',
+            marginTop: '40px',
             padding: '20px',
             borderRadius: '28px',
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              width: '100%',
-              gap: '20px',
-            }}
-          >
-            <Box
-              sx={{
-                backgroundColor: '#4f4f4d',
-                width: '65%', // Adjust width as necessary
-                minHeight: '100px',
-                padding: '20px',
-              }}
-            >
-              <PurchaseProductComponent
-                purchases={purchases}
-                setPurchases={setPurchases}
-              />
-            </Box>
-            <Box
-              sx={{
-                backgroundColor: '#363632',
-                width: '30%',
-                padding: '20px',
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  color: 'white',
-                }}
-              >
-                Total: ${totalAmount.toFixed(2)}
-              </Typography>
-            </Box>
-          </Box>
+          {currentStep === 0 && (
+            <ProductSelection
+              purchases={purchases}
+              setPurchases={setPurchases}
+              totalAmount={totalAmount}
+              onNext={handleNext}
+            />
+          )}
+          {currentStep === 1 && (
+            <DeliveryDetails
+              deliveryOption={deliveryOption}
+              setDeliveryOption={setDeliveryOption}
+              userData={userData}
+              setUserData={setUserData}
+              onConfirm={handleNext}
+              onBack={handleBack}
+            />
+          )}
+          {currentStep === 2 && (
+            <Confirmation
+              userData={userData}
+              deliveryOption={deliveryOption}
+              totalAmount={totalAmount}
+              onBack={handleBack}
+              onConfirm={handleNext}
+            />
+          )}
         </Box>
       </Box>
     </Box>

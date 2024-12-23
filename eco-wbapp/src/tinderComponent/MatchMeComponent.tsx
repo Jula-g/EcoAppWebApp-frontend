@@ -11,7 +11,6 @@ const SwipeCards = () => {
         width: '450px',
         height: '550px',
         margin: 'auto',
-        marginTop: '5%',
       }}
     >
       {cards.map((card, index) => (
@@ -20,7 +19,7 @@ const SwipeCards = () => {
           cards={cards}
           setCards={setCards}
           {...card}
-          index={index} // Pass index to manage z-index for stacked cards
+          index={index}
         />
       ))}
     </div>
