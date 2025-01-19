@@ -1,23 +1,16 @@
-import React from 'react';
-import { Box, Card, CardActionArea, Divider, Typography } from '@mui/material';
-import foodImage from './images-home-page/food.png';
-import batteryImage from './images-home-page/battery.png';
-import furnitureImage from './images-home-page/furniture.png';
-import clothesImage from './images-home-page/clothes.png';
-import dropPointImage from './images-home-page/drop-point.png';
-import matchImage from './images-home-page/match.png';
+import { Box, Card, CardActionArea, Typography } from '@mui/material';
+import ClWaste from './images-home-page/clothes_waste.jpg';
+import ElWaste from './images-home-page/electric_waste.jpg';
+import FWaste from './images-home-page/food_waste.jpg';
 
-const categories = [
-  { name: 'Food', image: foodImage },
-  { name: 'Battery', image: batteryImage },
-  { name: 'Furniture', image: furnitureImage },
-  { name: 'Clothes', image: clothesImage },
-  { name: 'Drop-point', image: dropPointImage },
-  { name: 'Match Me', image: matchImage },
+const dropPointCategories = [
+  { name: 'Clothes Waste', image: ClWaste },
+  { name: 'Electronic Waste', image: ElWaste },
+  { name: 'Food Waste', image: FWaste },
 ];
 
-const CatSelectComponent: React.FC = () => {
-  const handleImageClick = (category: string) => {
+const DropPointComponent: React.FC = () => {
+  const handleCategoryClick = (category: string) => {
     console.log(`${category} clicked!`);
   };
 
@@ -35,42 +28,42 @@ const CatSelectComponent: React.FC = () => {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(3, 1fr)', 
             gap: '20px',
           }}
         >
-          {categories.map(({ name, image }) => (
+          {dropPointCategories.map(({ name, image }) => (
             <CardActionArea
               key={name}
-              onClick={() => handleImageClick(name)}
+              onClick={() => handleCategoryClick(name)}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               <Box
                 sx={{
-                  width: '200px',
-                  height: '200px',
+                  width: '200px', // Keeps the card narrower
+                  height: '350px', // Makes the card taller
                   backgroundColor: 'white',
                   borderRadius: '16px',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
                 }}
               >
+                {/* Image Section */}
                 <Box
                   sx={{
-                    width: '100px',
-                    height: '100px',
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
+                    width: '100%',
+                    height: '70%', // Allocates 70% of the card height for the image
                     overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '10px',
+                    borderTopLeftRadius: '16px',
+                    borderTopRightRadius: '16px',
+                    backgroundColor: '#f0f0f0', // Placeholder background
                   }}
                 >
                   <Box
@@ -84,12 +77,16 @@ const CatSelectComponent: React.FC = () => {
                     }}
                   />
                 </Box>
+
+                {/* Text Section */}
                 <Typography
                   variant="h6"
                   sx={{
-                    color: 'black',
+                    color: '#123524',
                     fontFamily: 'Poppins',
                     textAlign: 'center',
+                    marginTop: '10px',
+                    padding: '0 10px', // Adds horizontal padding for better readability
                   }}
                 >
                   {name}
@@ -99,9 +96,8 @@ const CatSelectComponent: React.FC = () => {
           ))}
         </Box>
       </Card>
-      <Divider sx={{ marginTop: '20px', marginBottom: '20px' }} />
     </>
   );
 };
 
-export default CatSelectComponent;
+export default DropPointComponent;
