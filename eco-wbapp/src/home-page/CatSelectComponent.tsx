@@ -6,6 +6,7 @@ import furnitureImage from './images-home-page/furniture.png';
 import clothesImage from './images-home-page/clothes.png';
 import dropPointImage from './images-home-page/drop-point.png';
 import matchImage from './images-home-page/match.png';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   { name: 'Food', image: foodImage },
@@ -17,8 +18,18 @@ const categories = [
 ];
 
 const CatSelectComponent: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleImageClick = (category: string) => {
     console.log(`${category} clicked!`);
+
+    if (category == 'Drop-point') {
+      navigate('/drop-point');
+    } else {
+      console.log(`${category} clicked!`);
+    }
+
+
   };
 
   return (
