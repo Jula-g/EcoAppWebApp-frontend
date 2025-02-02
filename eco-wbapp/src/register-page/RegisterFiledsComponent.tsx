@@ -100,7 +100,7 @@ function RegisterForm() {
             fontFamily: 'Comfortaa',
           }}
         >
-          Register for EcoApp
+          Register for ECCOGANG
         </Typography>
         <Divider sx={{ marginBottom: '20px' }} />
 

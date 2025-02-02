@@ -76,7 +76,7 @@ function LoginForm() {
             }}
             onClick={navigateToHomePage}
           >
-            EcoApp
+            ECCOGANG
           </Typography>
           <Divider
             sx={{ marginTop: '20px', marginBottom: '20px', width: '100%' }}
