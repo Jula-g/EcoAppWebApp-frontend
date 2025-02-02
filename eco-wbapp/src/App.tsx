@@ -10,6 +10,8 @@ import ShoppingPage from './ShoppingPage/ShoppingPage';
 import React from 'react';
 import { AuthProvider } from './authContext';
 import { ApiProvider } from './apiContext';
+import { Add } from '@mui/icons-material';
+import AddProductPage from './addProduct-page';
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/home-page" element={<HomePage />} />
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/add-product" element={<AddProductPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/tinder" element={<MatchMe />} />
             <Route path="/drop-point" element={<MapComp />} />
