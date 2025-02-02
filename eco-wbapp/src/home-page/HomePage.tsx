@@ -4,6 +4,7 @@ import OpeningComonent from './OpeningComonent';
 import DropPointComponent from './DropPointComonent';
 import ShopElement from './ShopElement';
 import DropPointElemtent from './DropPointElement';
+import { useEffect, useState } from 'react';
 
 function HomePage() {
   return (

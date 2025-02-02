@@ -1,4 +1,5 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
@@ -22,39 +23,61 @@ function Swiper() {
     },
   };
 
-  const mockData = [
-    {
-      id: 1,
-      name: 'Product 1',
-      price: '$10.00',
-      image:
-        'https://m.media-amazon.com/images/I/81nyYcdA+HL._AC_UF894,1000_QL80_.jpg',
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      price: '$20.00',
-      image:
-        'https://m.media-amazon.com/images/I/61W-5euDA0L._AC_UF894,1000_QL80_.jpg',
-    },
-    {
-      id: 3,
-      name: 'Product 3',
-      price: '$30.00',
-      image:
-        'https://m.media-amazon.com/images/I/71i0jBUszvL._AC_UF894,1000_QL80_.jpg',
-    },
-    {
-      id: 4,
-      name: 'Product 4',
-      price: '$40.00',
-      image: 'https://via.placeholder.com/150',
-    },
-  ];
+  // const mockData = [
+  //   {
+  //     id: 1,
+  //     name: 'Product 1',
+  //     price: '$10.00',
+  //     image:
+  //       'https://m.media-amazon.com/images/I/81nyYcdA+HL._AC_UF894,1000_QL80_.jpg',
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Product 2',
+  //     price: '$20.00',
+  //     image:
+  //       'https://m.media-amazon.com/images/I/61W-5euDA0L._AC_UF894,1000_QL80_.jpg',
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Product 3',
+  //     price: '$30.00',
+  //     image:
+  //       'https://m.media-amazon.com/images/I/71i0jBUszvL._AC_UF894,1000_QL80_.jpg',
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Product 4',
+  //     price: '$40.00',
+  //     image: 'https://via.placeholder.com/150',
+  //   },
+  // ];
+
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/products");
+        const data = await response.json();
+        console.log("Fetched Products:", data);
+        setProducts(data);
+      } catch (error) {
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
 
   return (
     <Carousel responsive={responsive}>
-      {mockData.map((item) => (
+      {products.map((item) => (
         <Card
           key={item.id}
           sx={{

@@ -59,8 +59,6 @@ const MapComponent = () => {
     { lat: 53.013798, lng: 18.596223 }, // Bydgoszcz
   ];
 
-
-
   const [foodMarkers] = useState(
     mockMarkersFood.map((m) => ({ position: L.latLng(m.lat, m.lng), icon: foodIcon }))
   );

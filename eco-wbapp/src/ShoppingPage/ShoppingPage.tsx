@@ -14,26 +14,51 @@ import ProductCard from '../home-page/ProductCard';
 
 export default function ShoppingPage() {
   // --- Dummy product data ---
-  const products = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    name: `Product ${index + 1}`,
-    price: `${(5000 + index * 100).toFixed(2)} zł`,
-    image: 'https://via.placeholder.com/200x200',
-    condition: index % 2 === 0 ? 'Nowy' : 'Używany',
-    category: ['Meble', 'Żywność', 'Ubrania', 'Elektronika'][index % 4],
-  }));
+  // const products = Array.from({ length: 100 }, (_, index) => ({
+  //   id: index + 1,
+  //   name: `Product ${index + 1}`,
+  //   price: `${(5000 + index * 100).toFixed(2)} zł`,
+  //   image: 'https://via.placeholder.com/200x200',
+  //   condition: index % 2 === 0 ? 'Nowy' : 'Używany',
+  //   category: ['Meble', 'Żywność', 'Ubrania', 'Elektronika'][index % 4],
+  // }));
+
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/products");
+        const data = await response.json();
+        console.log("Fetched Products:", data);
+        setProducts(data);
+      } catch (error) {
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // --- States ---
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [newCondition, setNewCondition] = useState(false);
-  const [usedCondition, setUsedCondition] = useState(false);
+  const [excellentCondition, setExcellentCondition] = useState(false);
+  const [goodCondition, setGoodCondition] = useState(false);
+  const [fairCondition, setFairCondition] = useState(false);
+  const [poorCondition, setPoorCondition] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState({
-    Meble: false,
-    Żywność: false,
-    Ubrania: false,
-    Elektronika: false,
+    Furniture: false,
+    Food: false,
+    Clothes: false,
+    Electronics: false,
   });
+
 
   // --- Scroll-based Search Bar Toggle ---
   const [showSearch, setShowSearch] = useState(true);
@@ -66,9 +91,12 @@ export default function ShoppingPage() {
         selectedCategories[product.category as keyof typeof selectedCategories];
       // Condition filter
       const conditionCheck =
-        (newCondition && product.condition === 'Nowy') ||
-        (usedCondition && product.condition === 'Używany') ||
-        (!newCondition && !usedCondition);
+        (newCondition && product.condition === 'New') ||
+        (excellentCondition && product.condition === 'Excellent') ||
+        (goodCondition && product.condition === 'Good') ||
+        (fairCondition && product.condition === 'Fair') ||
+        (poorCondition && product.condition === 'Poor') ||
+        (!newCondition && !excellentCondition && !goodCondition && !fairCondition && !poorCondition);
 
       return categoryCheck && conditionCheck;
     })
@@ -118,7 +146,7 @@ export default function ShoppingPage() {
           }}
         >
           <TextField
-            placeholder="Szukaj"
+            placeholder="Search"
             variant="filled"
             value={searchQuery}
             onChange={handleSearchChange}
@@ -169,7 +197,7 @@ export default function ShoppingPage() {
               variant="h6"
               sx={{ marginBottom: '20px', color: '#000' }}
             >
-              Kategorie
+              Category
             </Typography>
             <FormGroup>
               {Object.keys(selectedCategories).map((category) => (
@@ -179,7 +207,7 @@ export default function ShoppingPage() {
                     <Checkbox
                       checked={
                         selectedCategories[
-                          category as keyof typeof selectedCategories
+                        category as keyof typeof selectedCategories
                         ]
                       }
                       onChange={() => handleCategoryChange(category)}
@@ -194,7 +222,7 @@ export default function ShoppingPage() {
               variant="h6"
               sx={{ marginTop: '20px', marginBottom: '10px', color: '#000' }}
             >
-              Filtruj
+              Condition
             </Typography>
             <FormGroup>
               <FormControlLabel
@@ -204,16 +232,43 @@ export default function ShoppingPage() {
                     onChange={(e) => setNewCondition(e.target.checked)}
                   />
                 }
-                label="Nowe"
+                label="New"
               />
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={usedCondition}
-                    onChange={(e) => setUsedCondition(e.target.checked)}
+                    checked={excellentCondition}
+                    onChange={(e) => setExcellentCondition(e.target.checked)}
                   />
                 }
-                label="Używane"
+                label="Excellent"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={goodCondition}
+                    onChange={(e) => setGoodCondition(e.target.checked)}
+                  />
+                }
+                label="Good"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={fairCondition}
+                    onChange={(e) => setFairCondition(e.target.checked)}
+                  />
+                }
+                label="Fair"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={poorCondition}
+                    onChange={(e) => setPoorCondition(e.target.checked)}
+                  />
+                }
+                label="Poor"
               />
             </FormGroup>
           </Box>
