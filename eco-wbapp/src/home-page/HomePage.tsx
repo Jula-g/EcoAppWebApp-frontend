@@ -12,9 +12,9 @@ function HomePage() {
 
   useEffect(() => {
     if (user) {
-      console.log('Logged-in User:', user);
+      console.log('User still logged in:', user);
     } else {
-      console.log('No user is logged in');
+      console.log('User session not found or logged out.');
     }
   }, [user]);
 

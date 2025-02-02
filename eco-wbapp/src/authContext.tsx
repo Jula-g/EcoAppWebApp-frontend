@@ -21,13 +21,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const client = new EcoWebClient();
 
+  // Function to persist login state
   const login = async (
     username: string,
     password: string
   ): Promise<boolean> => {
     try {
       const { user } = await client.login(username, password);
-      setUser(user); // Update state
+      setUser(user);
+      localStorage.setItem('authUser', JSON.stringify(user)); // Save user in localStorage
+      console.log('User logged in:', user);
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -38,12 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = () => {
     client.logout();
     setUser(null);
+    localStorage.removeItem('authUser'); // Remove user from localStorage
+    console.log('User logged out');
   };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('authUser');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+      console.log('User session restored:', JSON.parse(storedUser));
     }
   }, []);
 
