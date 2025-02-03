@@ -239,6 +239,29 @@ const MapComponent = () => {
           </Box>
         </Box>
       </Box>
+      <Box
+        sx={{
+          width: '100%',
+          backgroundColor: '#123524',
+          color: '#ffffff',
+          padding: '30px 20px',
+          textAlign: 'center',
+          marginTop: '60px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <Typography
+          variant="body1"
+          sx={{
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            color: '#85A947',
+          }}
+        >
+          &copy; {new Date().getFullYear()} EcoStore. Crafted with care for our
+          planet.
+        </Typography>
+      </Box>
     </Box>
   );
 };

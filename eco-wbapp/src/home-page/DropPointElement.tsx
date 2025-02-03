@@ -18,7 +18,7 @@ export default function DropPointElemtent() {
         <Typography
           variant="h5"
           sx={{
-            fontFamily: 'Poppins',
+            fontFamily: 'Comfortaa',
             fontWeight: 'bold',
             fontSize: '80px',
             color: '#123524',
@@ -29,7 +29,7 @@ export default function DropPointElemtent() {
         <Typography
           variant="body1"
           sx={{
-            fontFamily: 'Poppins',
+            fontFamily: 'Comfortaa',
             color: '#123524',
             fontSize: '24px',
             lineHeight: '1.6',
@@ -48,7 +48,7 @@ export default function DropPointElemtent() {
             width: '250px',
             padding: '10px 20px',
             fontSize: '25px',
-            fontFamily: 'Poppins',
+            fontFamily: 'Comfortaa',
             elevation: 0,
             fontWeight: 800,
             textTransform: 'none',

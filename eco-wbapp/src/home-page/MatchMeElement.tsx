@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import MatchMeComponent from './MatchMeComponent';
 
 export default function MatchMeElement() {
@@ -6,38 +6,75 @@ export default function MatchMeElement() {
     <Box
       sx={{
         width: '100%',
-        padding: '5%',
+        padding: '30px',
         display: 'flex',
-        flexDirection: 'column',
-        gap: '120px',
+        borderRadius: '16px',
+        // Change flexDirection to row
+        flexDirection: 'row',
+        // Adjust gap as needed
+        gap: '80px',
         marginTop: '100px',
         backgroundColor: '#EFE3C2',
       }}
     >
-      <Typography
-        variant="h5"
+      {/* Left side: Text */}
+      <Box sx={{ flex: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontFamily: 'Comfortaa',
+            fontWeight: 'bold',
+            fontSize: '80px',
+            color: '#123524',
+          }}
+        >
+          Match Finder
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{
+            fontFamily: 'Comfortaa',
+            color: '#555555',
+            lineHeight: '1.6',
+            width: '80%',
+          }}
+        >
+          Praesent faucibus neque id eleifend scelerisque. Ut blandit nunc ac
+          magna ultricies aliquam.
+        </Typography>
+
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: '#123524',
+            color: '#EFE3C2',
+            width: '250px',
+            padding: '10px 20px',
+            fontSize: '25px',
+            fontFamily: 'Comfortaa',
+            elevation: 0,
+            fontWeight: 800,
+            textTransform: 'none',
+            borderRadius: '8px',
+            marginTop: '40px',
+            boxShadow: 'none',
+          }}
+        >
+          Find Match
+        </Button>
+      </Box>
+
+      {/* Right side: Heart image */}
+      <Box
         sx={{
-          fontFamily: 'Poppins',
-          fontWeight: 'bold',
-          fontSize: '80px',
-          color: '#123524',
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'flex-end',
         }}
       >
-        Match Finder
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          fontFamily: 'Poppins',
-          color: '#555555',
-          lineHeight: '1.6',
-          width: '80%',
-        }}
-      >
-        Praesent faucibus neque id eleifend scelerisque. Ut blandit nunc ac
-        magna ultricies aliquam.
-      </Typography>
-      <MatchMeComponent />
+        <MatchMeComponent />
+      </Box>
     </Box>
   );
 }
