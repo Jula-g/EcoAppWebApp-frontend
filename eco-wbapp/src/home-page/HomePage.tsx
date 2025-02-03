@@ -1,140 +1,91 @@
-import {
-  Box,
-  Collapse,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-  Typography,
-} from '@mui/material';
+import { Box, Typography, Button, CssBaseline } from '@mui/material';
 import MenuAppBar from '../menu-bar/MenuAppBar';
-import React from 'react';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import ChairIcon from '@mui/icons-material/Chair';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import MapIcon from '@mui/icons-material/Map';
-import Swiper from './Swiper';
-import CatSelectComponent from './CatSelectComponent';
+import OpeningComonent from './OpeningComonent';
+import DropPointComponent from './DropPointComonent';
+import ShopElement from './ShopElement';
+import DropPointElemtent from './DropPointElement';
 
 function HomePage() {
-  const [open, setOpen] = React.useState(true);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   return (
     <>
-      <Box
-        sx={{
-          backgroundColor: '#e8e8eb',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          padding: '20px',
-        }}
-      >
+      <CssBaseline />
+      <Box sx={{ backgroundColor: '#EFE3C2' }}>
         <MenuAppBar />
+        <OpeningComonent />
 
         <Box
           sx={{
-            padding: '20px',
             width: '100%',
-            maxWidth: '85%',
-            minHeight: '100vh',
-            margin: 'auto',
+            padding: '5%',
             display: 'flex',
-            marginTop: '70px',
+            flexDirection: 'column',
+            gap: '100px',
+            marginTop: '100px',
+            backgroundColor: '#EFE3C2',
           }}
         >
-          {/* <Box
-            sx={{
-              width: '25%',
-              minHeight: '100px',
-            }}
-          >
-            <List
-              sx={{
-                width: '260px',
-                bgcolor: '#e8e8eb',
-              }}
-              component="nav"
-              aria-labelledby="nested-list-subheader"
-              subheader={
-                <ListSubheader
-                  component="div"
-                  id="nested-list-subheader"
-                  sx={{ backgroundColor: '#e8e8eb' }}
-                >
-                  Kategorie
-                </ListSubheader>
-              }
-            >
-              <ListItemButton>
-                <ListItemIcon>
-                  <MapIcon />
-                </ListItemIcon>
-                <ListItemText primary="Sent mail" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <ChairIcon />
-                </ListItemIcon>
-                <ListItemText primary="Drafts" />
-              </ListItemButton>
-              <ListItemButton onClick={handleClick}>
-                <ListItemIcon>
-                  <FastfoodIcon />
-                </ListItemIcon>
-                <ListItemText primary="Inbox" />
-                {open ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={open} timeout="auto" unmountOnExit>
-                {/* <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <ChairIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Starred" />
-                  </ListItemButton>
-                </List> */}
-          {/* </Collapse>
-            </List>
-          </Box> */}
+          <ShopElement />
+          <DropPointElemtent />
 
+          {/* Match Finder Box */}
           <Box
             sx={{
               width: '100%',
-              padding: '20px',
+              padding: '5%',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '120px',
+              marginTop: '100px',
+              backgroundColor: '#EFE3C2',
             }}
           >
-            <CatSelectComponent />
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
-                color: 'black',
-                marginBottom: '20px',
                 fontFamily: 'Poppins',
+                fontWeight: 'bold',
+                fontSize: '80px',
+                color: '#123524',
               }}
             >
-              Recommended
+              Match Finder
             </Typography>
-            <Swiper />
             <Typography
-              variant="h4"
+              variant="body1"
               sx={{
-                color: 'black',
-                marginBottom: '20px',
                 fontFamily: 'Poppins',
+                color: '#555555',
+                lineHeight: '1.6',
               }}
             >
-              Bestsellers
+              Praesent faucibus neque id eleifend scelerisque. Ut blandit nunc
+              ac magna ultricies aliquam.
             </Typography>
-            <Swiper />
           </Box>
+        </Box>
+
+        <Box
+          sx={{
+            width: '100%',
+            backgroundColor: '#123524',
+            color: '#ffffff',
+            padding: '30px 20px',
+            textAlign: 'center',
+            marginTop: '60px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: 'Poppins',
+              fontSize: '16px',
+              color: '#85A947',
+            }}
+          >
+            &copy; {new Date().getFullYear()} EcoStore. Crafted with care for
+            our planet.
+          </Typography>
         </Box>
       </Box>
     </>

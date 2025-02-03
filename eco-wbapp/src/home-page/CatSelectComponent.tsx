@@ -6,6 +6,7 @@ import furnitureImage from './images-home-page/furniture.png';
 import clothesImage from './images-home-page/clothes.png';
 import dropPointImage from './images-home-page/drop-point.png';
 import matchImage from './images-home-page/match.png';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   { name: 'Food', image: foodImage },
@@ -17,8 +18,18 @@ const categories = [
 ];
 
 const CatSelectComponent: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleImageClick = (category: string) => {
     console.log(`${category} clicked!`);
+
+    if (category == 'Drop-point') {
+      navigate('/drop-point');
+    } else {
+      console.log(`${category} clicked!`);
+    }
+
+
   };
 
   return (
@@ -28,22 +39,10 @@ const CatSelectComponent: React.FC = () => {
           maxWidth: '100%',
           padding: '30px',
           margin: 'auto',
-          backgroundColor: '#c9c9c9',
-          boxShadow: 'none',
+          backgroundColor: '#85A947',
           borderRadius: '20px',
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{
-            color: 'BLACK',
-            textAlign: 'center',
-            marginBottom: '20px',
-            fontFamily: 'Poppins',
-          }}
-        >
-          Categories
-        </Typography>
         <Box
           sx={{
             display: 'grid',
@@ -58,43 +57,55 @@ const CatSelectComponent: React.FC = () => {
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
               }}
             >
               <Box
                 sx={{
-                  width: '150px',
-                  height: '150px',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
+                  width: '200px',
+                  height: '200px',
                   backgroundColor: 'white',
-                  padding: '20px',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <Box
-                  component="img"
-                  src={image}
-                  alt={name}
                   sx={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
+                    width: '100px',
+                    height: '100px',
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '10px',
                   }}
-                />
+                >
+                  <Box
+                    component="img"
+                    src={image}
+                    alt={name}
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: 'black',
+                    fontFamily: 'Poppins',
+                    textAlign: 'center',
+                  }}
+                >
+                  {name}
+                </Typography>
               </Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: 'black',
-                  textAlign: 'center',
-                  marginTop: '10px',
-                  fontFamily: 'Poppins',
-                }}
-              >
-                {name}
-              </Typography>
             </CardActionArea>
           ))}
         </Box>
