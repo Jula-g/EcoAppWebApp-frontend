@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Card, CardActionArea, Divider, Typography } from '@mui/material';
+import { Box, CardActionArea, Divider, Typography } from '@mui/material';
+
+// Example images (yours may differ)
 import foodImage from './images-home-page/food.png';
 import batteryImage from './images-home-page/battery.png';
 import furnitureImage from './images-home-page/furniture.png';
@@ -34,20 +36,19 @@ const CatSelectComponent: React.FC = () => {
 
   return (
     <>
-      <Card
+      <Box
         sx={{
-          maxWidth: '100%',
-          padding: '30px',
-          margin: 'auto',
-          backgroundColor: '#85A947',
-          borderRadius: '20px',
+          width: '100%',
+          backgroundColor: '#EFE3C2',
+          borderRadius: '16px',
         }}
       >
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '20px',
+            marginTop: '60px',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+            gap: '40px',
           }}
         >
           {categories.map(({ name, image }) => (
@@ -55,61 +56,52 @@ const CatSelectComponent: React.FC = () => {
               key={name}
               onClick={() => handleImageClick(name)}
               sx={{
+                // Each item is a column in our grid
                 display: 'flex',
                 flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#EFE3C2',
+                borderRadius: '12px',
+                padding: '16px',
+                transition: 'box-shadow 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                },
               }}
             >
               <Box
+                component="img"
+                src={image}
+                alt={name}
                 sx={{
-                  width: '200px',
-                  height: '200px',
-                  backgroundColor: 'white',
-                  borderRadius: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  width: '80px',
+                  height: '80px',
+                  objectFit: 'contain',
+                  // Grayscale + hover effect
+                  filter: 'grayscale(100%)',
+                  transition: 'filter 0.3s ease',
+                  '&:hover': {
+                    filter: 'grayscale(0%)',
+                  },
+                }}
+              />
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  color: '#123524',
+                  fontFamily: 'Poppins',
+                  textAlign: 'center',
+                  marginTop: '12px',
+                  fontWeight: 600,
                 }}
               >
-                <Box
-                  sx={{
-                    width: '100px',
-                    height: '100px',
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '10px',
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={image}
-                    alt={name}
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Box>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: 'black',
-                    fontFamily: 'Poppins',
-                    textAlign: 'center',
-                  }}
-                >
-                  {name}
-                </Typography>
-              </Box>
+                {name}
+              </Typography>
             </CardActionArea>
           ))}
         </Box>
-      </Card>
+      </Box>
       <Divider sx={{ marginTop: '20px', marginBottom: '20px' }} />
     </>
   );

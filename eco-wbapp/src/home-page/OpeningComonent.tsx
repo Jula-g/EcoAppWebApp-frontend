@@ -58,7 +58,7 @@ export default function OpeningComonent() {
             width: '250px',
             padding: '10px 20px',
             fontSize: '25px',
-            fontFamily: 'Poppins',
+            fontFamily: 'Comfortaa',
             fontWeight: 800,
             textTransform: 'none',
             marginTop: '20px',

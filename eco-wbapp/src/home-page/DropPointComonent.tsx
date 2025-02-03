@@ -1,4 +1,7 @@
-import { Box, Card, CardActionArea, Typography } from '@mui/material';
+import React from 'react';
+import { Box, CardActionArea, Typography } from '@mui/material';
+
+// Example images (replace with your paths)
 import ClWaste from './images-home-page/clothes_waste.jpg';
 import ElWaste from './images-home-page/electric_waste.jpg';
 import FWaste from './images-home-page/food_waste.jpg';
@@ -16,20 +19,20 @@ const DropPointComponent: React.FC = () => {
 
   return (
     <>
-      <Card
+      {/* Wrapper Box */}
+      <Box
         sx={{
-          maxWidth: '100%',
-          padding: '30px',
-          margin: 'auto',
-          backgroundColor: '#85A947',
-          borderRadius: '20px',
+          width: '100%',
+          backgroundColor: '#EFE3C2',
+          borderRadius: '16px',
+          padding: '10px',
         }}
       >
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)', 
-            gap: '20px',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '5px',
           }}
         >
           {dropPointCategories.map(({ name, image }) => (
@@ -40,53 +43,60 @@ const DropPointComponent: React.FC = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
+                backgroundColor: '#EFE3C2',
+                borderRadius: '16px',
+                overflow: 'hidden',
+
+                transition: 'box-shadow 0.3s ease, transform 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  transform: 'translateY(-4px)',
+                },
+                width: '200px',
+                height: '400px', // Same tall shape
               }}
             >
+              {/* Image Section */}
               <Box
                 sx={{
-                  width: '200px', // Keeps the card narrower
-                  height: '350px', // Makes the card taller
-                  backgroundColor: 'white',
-                  borderRadius: '16px',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
+                  width: '100%',
+                  height: '90%', // 70% height for the image
+                  overflow: 'hidden',
+                  backgroundColor: '#f0f0f0',
                 }}
               >
-                {/* Image Section */}
                 <Box
+                  component="img"
+                  src={image}
+                  alt={name}
                   sx={{
                     width: '100%',
-                    height: '70%', // Allocates 70% of the card height for the image
-                    overflow: 'hidden',
-                    borderTopLeftRadius: '16px',
-                    borderTopRightRadius: '16px',
-                    backgroundColor: '#f0f0f0', // Placeholder background
+                    height: '100%',
+                    objectFit: 'cover',
+                    filter: 'grayscale(100%)',
+                    transition: 'filter 0.3s ease',
+                    '&:hover': {
+                      filter: 'grayscale(0%)',
+                    },
                   }}
-                >
-                  <Box
-                    component="img"
-                    src={image}
-                    alt={name}
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Box>
+                />
+              </Box>
 
-                {/* Text Section */}
+              {/* Text Section */}
+              <Box
+                sx={{
+                  width: '100%',
+                  padding: '12px',
+                  textAlign: 'center',
+                }}
+              >
                 <Typography
                   variant="h6"
                   sx={{
                     color: '#123524',
                     fontFamily: 'Poppins',
-                    textAlign: 'center',
-                    marginTop: '10px',
-                    padding: '0 10px', // Adds horizontal padding for better readability
+                    fontWeight: 600,
                   }}
                 >
                   {name}
@@ -95,7 +105,7 @@ const DropPointComponent: React.FC = () => {
             </CardActionArea>
           ))}
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };
