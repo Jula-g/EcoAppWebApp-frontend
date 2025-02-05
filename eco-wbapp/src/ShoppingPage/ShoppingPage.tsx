@@ -7,10 +7,12 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Button,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import MenuAppBar from '../menu-bar/MenuAppBar';
 import ProductCard from '../home-page/ProductCard';
+import { useNavigate } from 'react-router-dom';
 
 export default function ShoppingPage() {
   // --- Dummy product data ---
@@ -26,6 +28,7 @@ export default function ShoppingPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -181,96 +184,129 @@ export default function ShoppingPage() {
             py: 2,
           }}
         >
-          {/* SIDEBAR */}
           <Box
             sx={{
               width: '20%',
-              backgroundColor: '#fff',
-              padding: '20px',
               borderRadius: '8px',
               position: 'sticky',
-              top: '80px',
               height: 'fit-content',
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{ marginBottom: '20px', color: '#000' }}
+
+            <Button
+              // onClick={() => navigator('/')}
+              variant="contained"
+              sx={{
+                backgroundColor: '#123524',
+                color: '#EFE3C2',
+                padding: '10px',
+                width: '100%',
+                height: 'fit-content',
+                borderRadius: '8px',
+                fontSize: '25px',
+                fontFamily: 'Poppins',
+                elevation: 0,
+                fontWeight: 800,
+                textTransform: 'none',
+                marginBottom: '10px',
+                boxShadow: 'none',
+              }}
             >
-              Category
-            </Typography>
-            <FormGroup>
-              {Object.keys(selectedCategories).map((category) => (
+              Sell product
+            </Button>
+
+            {/* SIDEBAR */}
+            <Box
+              sx={{
+                width: '85%',
+                backgroundColor: '#fff',
+                padding: '20px',
+                borderRadius: '8px',
+                position: 'sticky',
+                top: '80px',
+                height: 'fit-content',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ marginBottom: '20px', color: '#000' }}
+              >
+                Category
+              </Typography>
+              <FormGroup>
+                {Object.keys(selectedCategories).map((category) => (
+                  <FormControlLabel
+                    key={category}
+                    control={
+                      <Checkbox
+                        checked={
+                          selectedCategories[
+                          category as keyof typeof selectedCategories
+                          ]
+                        }
+                        onChange={() => handleCategoryChange(category)}
+                      />
+                    }
+                    label={category}
+                  />
+                ))}
+              </FormGroup>
+
+              <Typography
+                variant="h6"
+                sx={{ marginTop: '20px', marginBottom: '10px', color: '#000' }}
+              >
+                Condition
+              </Typography>
+              <FormGroup>
                 <FormControlLabel
-                  key={category}
                   control={
                     <Checkbox
-                      checked={
-                        selectedCategories[
-                        category as keyof typeof selectedCategories
-                        ]
-                      }
-                      onChange={() => handleCategoryChange(category)}
+                      checked={newCondition}
+                      onChange={(e) => setNewCondition(e.target.checked)}
                     />
                   }
-                  label={category}
+                  label="New"
                 />
-              ))}
-            </FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={excellentCondition}
+                      onChange={(e) => setExcellentCondition(e.target.checked)}
+                    />
+                  }
+                  label="Excellent"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={goodCondition}
+                      onChange={(e) => setGoodCondition(e.target.checked)}
+                    />
+                  }
+                  label="Good"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={fairCondition}
+                      onChange={(e) => setFairCondition(e.target.checked)}
+                    />
+                  }
+                  label="Fair"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={poorCondition}
+                      onChange={(e) => setPoorCondition(e.target.checked)}
+                    />
+                  }
+                  label="Poor"
+                />
+              </FormGroup>
+            </Box>
 
-            <Typography
-              variant="h6"
-              sx={{ marginTop: '20px', marginBottom: '10px', color: '#000' }}
-            >
-              Condition
-            </Typography>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newCondition}
-                    onChange={(e) => setNewCondition(e.target.checked)}
-                  />
-                }
-                label="New"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={excellentCondition}
-                    onChange={(e) => setExcellentCondition(e.target.checked)}
-                  />
-                }
-                label="Excellent"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={goodCondition}
-                    onChange={(e) => setGoodCondition(e.target.checked)}
-                  />
-                }
-                label="Good"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={fairCondition}
-                    onChange={(e) => setFairCondition(e.target.checked)}
-                  />
-                }
-                label="Fair"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={poorCondition}
-                    onChange={(e) => setPoorCondition(e.target.checked)}
-                  />
-                }
-                label="Poor"
-              />
-            </FormGroup>
           </Box>
 
           {/* MAIN CONTENT */}
@@ -296,7 +332,7 @@ export default function ShoppingPage() {
             />
           </Box>
         </Box>
-      </Box>
+      </Box >
     </>
   );
 }
