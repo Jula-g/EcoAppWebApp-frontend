@@ -1,19 +1,23 @@
 import { Box, Button, Typography } from '@mui/material';
-import DropPointComponent from './DropPointComonent';
+import MatchMeComponent from './MatchMeComponent';
 
-export default function DropPointElemtent() {
+export default function MatchMeElement() {
   return (
     <Box
       sx={{
+        width: '100%',
         padding: '30px',
-        backgroundColor: '#EFE3C2',
-        borderRadius: '16px',
-        minWidth: '100%',
         display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: '20px',
+        borderRadius: '16px',
+        // Change flexDirection to row
+        flexDirection: 'row',
+        // Adjust gap as needed
+        gap: '80px',
+        marginTop: '100px',
+        backgroundColor: '#EFE3C2',
       }}
     >
+      {/* Left side: Text */}
       <Box sx={{ flex: 1 }}>
         <Typography
           variant="h5"
@@ -24,20 +28,20 @@ export default function DropPointElemtent() {
             color: '#123524',
           }}
         >
-          Drop Point
+          Match Finder
         </Typography>
+
         <Typography
           variant="body1"
           sx={{
             fontFamily: 'Comfortaa',
-            color: '#123524',
-            fontSize: '24px',
+            color: '#555555',
             lineHeight: '1.6',
-            marginTop: '80px',
+            width: '80%',
           }}
         >
-          Reduce waste by dropping off your recyclable items at thier specific
-          drop points. Where wase is collected and recycled.
+          Praesent faucibus neque id eleifend scelerisque. Ut blandit nunc ac
+          magna ultricies aliquam.
         </Typography>
 
         <Button
@@ -57,16 +61,19 @@ export default function DropPointElemtent() {
             boxShadow: 'none',
           }}
         >
-          Drop Now
+          Find Match
         </Button>
       </Box>
+
+      {/* Right side: Heart image */}
       <Box
         sx={{
           flex: 1,
           display: 'flex',
+          justifyContent: 'flex-end',
         }}
       >
-        <DropPointComponent />
+        <MatchMeComponent />
       </Box>
     </Box>
   );

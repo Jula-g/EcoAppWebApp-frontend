@@ -3,7 +3,13 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility';
-import { Box, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Typography,
+} from '@mui/material';
 import MenuAppBar from '../menu-bar/MenuAppBar';
 import 'leaflet-defaulticon-compatibility';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
@@ -12,7 +18,6 @@ import ReactDOMServer from 'react-dom/server';
 import LunchDiningSharpIcon from '@mui/icons-material/LunchDiningSharp';
 import HeadphonesBatteryIcon from '@mui/icons-material/HeadphonesBattery';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
-
 
 const foodIcon = L.divIcon({
   html: ReactDOMServer.renderToString(
@@ -60,16 +65,27 @@ const MapComponent = () => {
   ];
 
   const [foodMarkers] = useState(
-    mockMarkersFood.map((m) => ({ position: L.latLng(m.lat, m.lng), icon: foodIcon }))
+    mockMarkersFood.map((m) => ({
+      position: L.latLng(m.lat, m.lng),
+      icon: foodIcon,
+    }))
   );
   const [electronicsMarkers] = useState(
-    mockMarkersElectronics.map((m) => ({ position: L.latLng(m.lat, m.lng), icon: electronicsIcon }))
+    mockMarkersElectronics.map((m) => ({
+      position: L.latLng(m.lat, m.lng),
+      icon: electronicsIcon,
+    }))
   );
   const [clothesMarkers] = useState(
-    mockMarkersClothes.map((m) => ({ position: L.latLng(m.lat, m.lng), icon: clothesIcon }))
+    mockMarkersClothes.map((m) => ({
+      position: L.latLng(m.lat, m.lng),
+      icon: clothesIcon,
+    }))
   );
 
-  const categoryMarkersMap: { [key: string]: { position: L.LatLng; icon: L.DivIcon }[] } = {
+  const categoryMarkersMap: {
+    [key: string]: { position: L.LatLng; icon: L.DivIcon }[];
+  } = {
     Food: foodMarkers,
     Electronics: electronicsMarkers,
     Clothes: clothesMarkers,
@@ -83,13 +99,19 @@ const MapComponent = () => {
     ));
   };
 
-  const categories: (keyof typeof categoryMarkersMap)[] = ['Food', 'Electronics', 'Clothes'];
+  const categories: (keyof typeof categoryMarkersMap)[] = [
+    'Food',
+    'Electronics',
+    'Clothes',
+  ];
 
   const [checkedState, setCheckedState] = useState<Record<string, boolean>>(
     categories.reduce((acc, category) => ({ ...acc, [category]: false }), {})
   );
 
-  const areAllUnchecked = Object.values(checkedState).every((isChecked) => !isChecked);
+  const areAllUnchecked = Object.values(checkedState).every(
+    (isChecked) => !isChecked
+  );
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -102,7 +124,7 @@ const MapComponent = () => {
   return (
     <Box
       sx={{
-        backgroundColor: 'yellow',
+        backgroundColor: '#EFE3C2',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -114,7 +136,6 @@ const MapComponent = () => {
 
       <Box
         sx={{
-          backgroundColor: 'green',
           minWidth: '85%',
           minHeight: '80%',
           marginTop: '75px',
@@ -132,7 +153,7 @@ const MapComponent = () => {
         <Box
           sx={{
             flex: 1,
-            backgroundColor: 'lightgreen',
+            backgroundColor: '#123524',
             display: 'flex',
             borderRadius: '28px',
             flexDirection: 'column',
@@ -143,12 +164,11 @@ const MapComponent = () => {
             paddingLeft: '20px',
           }}
         >
-
           <Typography
             variant="body1"
             sx={{
-              fontFamily: 'Poppins',
-              color: '#123524',
+              fontFamily: 'Comfortaa',
+              color: '#EFE3C2',
               fontSize: '48px',
               fontStyle: 'bold',
               lineHeight: '1.6',
@@ -157,7 +177,7 @@ const MapComponent = () => {
             Category
           </Typography>
 
-          <FormGroup>
+          <FormGroup sx={{ color: '#EFE3C2', fontFamily: 'Comfortaa' }}>
             {categories.map((category) => (
               <FormControlLabel
                 key={category}
@@ -166,7 +186,7 @@ const MapComponent = () => {
                     checked={checkedState[category]}
                     onChange={handleCheckboxChange}
                     name={category.toString()}
-                    color="primary"
+                    sx={{ color: '#EFE3C2' }}
                   />
                 }
                 label={category}
@@ -178,13 +198,12 @@ const MapComponent = () => {
         <Box
           sx={{
             flex: 3,
-            backgroundColor: 'lightgreen',
+
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-
           <Box
             sx={{
               width: '100%',
@@ -195,7 +214,7 @@ const MapComponent = () => {
             <MapContainer
               center={{ lat: 52.229676, lng: 21.012229 }} // Center of the map (Warsaw)
               zoom={13}
-              style={{ height: '100%', width: '100%' }}
+              style={{ height: '100%', width: '100%', borderRadius: '28px' }}
             >
               {/* Warstwa kafelków mapy */}
               <TileLayer
@@ -203,17 +222,16 @@ const MapComponent = () => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               {/* Wyświetlanie markerów */}
-
               {categories.map((category) => {
                 if (checkedState[category]) {
                   return renderMarkers(categoryMarkersMap[category]);
                 } else if (areAllUnchecked) {
-                  return Object.values(categoryMarkersMap).map((categoryMarkers) =>
-                    renderMarkers(categoryMarkers)
+                  return Object.values(categoryMarkersMap).map(
+                    (categoryMarkers) => renderMarkers(categoryMarkers)
                   );
                 }
-              })};
-
+              })}
+              ;
               {/* // {renderMarkers(foodMarkers)}
               // {renderMarkers(electronicsMarkers)}
               // {renderMarkers(clothesMarkers)} */}
@@ -221,9 +239,31 @@ const MapComponent = () => {
           </Box>
         </Box>
       </Box>
-    </Box >
+      <Box
+        sx={{
+          width: '100%',
+          backgroundColor: '#123524',
+          color: '#ffffff',
+          padding: '30px 20px',
+          textAlign: 'center',
+          marginTop: '60px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <Typography
+          variant="body1"
+          sx={{
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            color: '#85A947',
+          }}
+        >
+          &copy; {new Date().getFullYear()} EcoStore. Crafted with care for our
+          planet.
+        </Typography>
+      </Box>
+    </Box>
   );
-
 };
 
 export default MapComponent;

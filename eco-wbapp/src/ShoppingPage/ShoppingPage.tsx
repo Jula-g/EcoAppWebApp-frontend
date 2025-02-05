@@ -108,7 +108,7 @@ export default function ShoppingPage() {
     );
 
   // --- Paginate ---
-  const itemsPerPage = 20;
+  const itemsPerPage = 15;
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -332,7 +332,30 @@ export default function ShoppingPage() {
             />
           </Box>
         </Box>
-      </Box >
+        <Box
+          sx={{
+            width: '100%',
+            backgroundColor: '#123524',
+            color: '#ffffff',
+            padding: '30px 20px',
+            textAlign: 'center',
+            marginTop: '60px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: 'Poppins',
+              fontSize: '16px',
+              color: '#85A947',
+            }}
+          >
+            &copy; {new Date().getFullYear()} EcoStore. Crafted with care for
+            our planet.
+          </Typography>
+        </Box>
+      </Box>
     </>
   );
 }

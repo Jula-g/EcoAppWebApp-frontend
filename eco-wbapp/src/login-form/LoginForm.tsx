@@ -2,37 +2,49 @@ import React, { useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Formik } from 'formik';
-import { useMemo } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Typography } from '@mui/material';
+import { useAuth } from '../authContext';
 
 function LoginForm() {
+  const { login } = useAuth(); // Access the login function from AuthContext
   const navigate = useNavigate();
 
+  // Handle form submission
   const onSubmit = useCallback(
-    async (values: any) => {
-      console.log('Form data', values);
-      navigate('/');
+    async (values: { username: string; password: string }) => {
+      try {
+        const success = await login(values.username, values.password); // Call login
+        if (success) {
+          console.log('Login successful!');
+          navigate('/'); // Redirect to home page after successful login
+        } else {
+          alert('Invalid credentials. Please try again.');
+        }
+      } catch (error: any) {
+        console.error('Login failed:', error);
+        alert(
+          error?.response?.data?.message ||
+            'An error occurred. Please try again.'
+        );
+      }
     },
-    [navigate]
+    [login, navigate]
   );
+
+  // Form validation schema
+  const validationSchema = yup.object().shape({
+    username: yup.string().required('Username is required'),
+    password: yup
+      .string()
+      .required('Password is required')
+      .min(3, 'Password must be at least 3 characters'),
+  });
 
   const navigateToHomePage = () => {
     navigate('/');
   };
-
-  const validationSchema = useMemo(
-    () =>
-      yup.object().shape({
-        username: yup.string().required('Username is required'),
-        password: yup
-          .string()
-          .required('Password is required')
-          .min(3, 'Password too short'),
-      }),
-    []
-  );
 
   return (
     <>
@@ -60,11 +72,11 @@ function LoginForm() {
               color: 'black',
               paddingLeft: '55px',
               marginTop: '20px',
+              cursor: 'pointer',
             }}
             onClick={navigateToHomePage}
-            style={{ cursor: 'pointer' }}
           >
-            EcoApp
+            ECCOGANG
           </Typography>
           <Divider
             sx={{ marginTop: '20px', marginBottom: '20px', width: '100%' }}
@@ -81,11 +93,7 @@ function LoginForm() {
             }}
           >
             <Typography
-              sx={{
-                fontSize: '38px',
-                color: 'black',
-                marginTop: '20px',
-              }}
+              sx={{ fontSize: '38px', color: 'black', marginTop: '20px' }}
             >
               Login
             </Typography>
@@ -99,7 +107,7 @@ function LoginForm() {
             >
               {(formik) => (
                 <form
-                  id="signinform"
+                  id="loginForm"
                   onSubmit={formik.handleSubmit}
                   noValidate
                   style={{
@@ -114,7 +122,6 @@ function LoginForm() {
                     label="Username"
                     variant="filled"
                     type="text"
-                    color="primary"
                     name="username"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -157,7 +164,7 @@ function LoginForm() {
                     }}
                   >
                     Don't have an account?{' '}
-                    <a href="/signup" style={{ color: 'black' }}>
+                    <a href="/register" style={{ color: 'black' }}>
                       Sign up
                     </a>
                   </Typography>
