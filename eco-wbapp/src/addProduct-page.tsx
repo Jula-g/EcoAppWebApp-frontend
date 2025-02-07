@@ -14,10 +14,31 @@ import {
 } from '@mui/material';
 import { useAuth } from './authContext';
 import MenuAppBar from './menu-bar/MenuAppBar';
+import { useApi } from './apiContext';
+import { useNavigate } from 'react-router-dom';
+
 
 function AddProductPage() {
   const { user } = useAuth();
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const apiClient = useApi();
+
+  const conditions = ["New", "Excellent", "Good", "Fair", "Poor"];
+  const categories = ["Food", "Furniture", "Women's Clothing", "Men's Clothing", "Electronics", "Books"];
+  const subcategories: Record<string, string[]> = {
+    Food: ["Fruits", "Vegetables", "Snacks", "Conserves", "Bakery", "Canned Food", "Grains", "Sweets", "Others"],
+    Furniture: ["Tables", "Chairs", "Beds", "Sofas", "Closets", "Desks", "Lamps", "Decoration", "Bookshelves", "Rugs", "Storage", "Outdoor Furniture", "Other Furniture"],
+    "Women's Clothing": ["Women's Shirts", "Women's Pants", "Women's Jackets", "Dresses", "Skirts", "Women's Shorts", "Women's Sweaters", "Women's Sportswear", "Women's Coats", "Women's Shoes", "Women's Accessories"],
+    "Men's Clothing": ["Men's Shirts", "Men's Pants", "Men's Jackets", "Men's Shorts", "Men's Sweaters", "Men's Sportswear", "Men's Coats", "Men's Shoes", "Men's Accessories"],
+    Electronics: ["Mobile Phones", "Computers", "TV", "Cameras", "Games and Consoles", "Smartwatches", "Headphones", "Speakers", "Household Appliances", "Printers", "Storage Devices", "Other Electronics"],
+    Books: ["Fiction", "Non-Fiction", "Textbooks", "Children's Books", "Biographies", "Mystery", "Fantasy", "Science Fiction", "History", "Romance", "Graphic Novels", "Travel", "Cooking", "Other Books"],
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+
 
   // State to track uploaded images for preview
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -79,32 +100,57 @@ function AddProductPage() {
   };
 
   // Handle form submissions
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // navigate('/home-page'); //Im using this instead of console logs cuz they never work :)
 
     // Gather form data
     const form = new FormData(e.currentTarget);
-    const data = {
-      name: form.get('name'),
-      description: form.get('description'),
-      price: form.get('price'),
-      condition: form.get('condition'),
-      category: form.get('category'),
-      subcategory: form.get('subcategory'),
-      status: form.get('status'),
-      style: form.get('style'),
-      transactionType: form.get('transactionType'),
-      adress: {
-        street: form.get('adress.street'),
-        city: form.get('adress.city'),
-        zip: form.get('adress.zip'),
-      },
-      // Attach the file objects directly if you want to upload them via FormData
-      files: selectedImages,
-    };
+    const formData = new FormData();
 
-    console.log('Form Data:', data);
-    // Perform your POST request or service call to create the product
+    // Append text fields to formData
+    formData.append("name", form.get("name") as string);
+    formData.append("description", form.get("description") as string);
+    formData.append("price", form.get("price") as string);
+    formData.append("condition", form.get("condition") as string);
+    formData.append("category", form.get("category") as string);
+    formData.append("subcategory", form.get("subcategory") as string);
+    formData.append("status", form.get("status") as string);
+    formData.append("style", form.get("style") as string);
+    formData.append("transactionType", form.get("transactionType") as string);
+
+    // Append address fields
+    formData.append("adress.street", form.get("adress.street") as string);
+    formData.append("adress.city", form.get("adress.city") as string);
+    formData.append("adress.zip", form.get("adress.zip") as string);
+
+    // Append images to formData
+    selectedImages.forEach((image) => {
+      formData.append("images", image);
+    });
+
+    console.log("Form Data:", formData);
+
+    // Perform POST request or service call to create the product
+    try {
+      const response = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create product");
+      }
+
+      const result = await response.json();
+      console.log("Product created successfully!", result);
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
   };
 
   return (
@@ -186,14 +232,12 @@ function AddProductPage() {
                 {/* Condition */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
                   <InputLabel id="condition-label">Condition</InputLabel>
-                  <Select
-                    labelId="condition-label"
-                    id="condition"
-                    name="condition"
-                    label="Condition"
-                  >
-                    <MenuItem value="NEW">New</MenuItem>
-                    <MenuItem value="USED">Used</MenuItem>
+                  <Select labelId="condition-label" id="condition" name="condition" label="Condition">
+                    {conditions.map((condition) => (
+                      <MenuItem key={condition} value={condition}>
+                        {condition}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
@@ -205,23 +249,37 @@ function AddProductPage() {
                     id="category"
                     name="category"
                     label="Category"
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      setSelectedSubcategory("");
+                    }}
                   >
-                    <MenuItem value="FASHION">Fashion</MenuItem>
-                    <MenuItem value="ELECTRONICS">Electronics</MenuItem>
+                    {categories.map((category) => (
+                      <MenuItem key={category} value={category}>
+                        {category}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
                 {/* Subcategory */}
-                <FormControl fullWidth required sx={{ mb: 2 }}>
+                <FormControl fullWidth required sx={{ mb: 2 }} disabled={!selectedCategory}>
                   <InputLabel id="subcategory-label">Subcategory</InputLabel>
                   <Select
                     labelId="subcategory-label"
                     id="subcategory"
                     name="subcategory"
                     label="Subcategory"
+                    value={selectedSubcategory}
+                    onChange={(e) => setSelectedSubcategory(e.target.value)}
                   >
-                    <MenuItem value="CLOTHING">Clothing</MenuItem>
-                    <MenuItem value="PHONES">Phones</MenuItem>
+                    {selectedCategory &&
+                      subcategories[selectedCategory].map((subcategory) => (
+                        <MenuItem key={subcategory} value={subcategory}>
+                          {subcategory}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
 
@@ -236,6 +294,7 @@ function AddProductPage() {
                   >
                     <MenuItem value="AVAILABLE">Available</MenuItem>
                     <MenuItem value="SOLD">Sold</MenuItem>
+                    <MenuItem value="RESERVED">Reserved</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -251,7 +310,8 @@ function AddProductPage() {
                     label="Transaction Type"
                   >
                     <MenuItem value="SALE">Sale</MenuItem>
-                    <MenuItem value="BARTER">Barter</MenuItem>
+                    <MenuItem value="EXCHANGE">Exchange</MenuItem>
+                    <MenuItem value="GIVEN_AWAY">Give away</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -321,11 +381,10 @@ function AddProductPage() {
                   onClick={handleZoneClick}
                   sx={{
                     cursor: 'pointer',
-                    border: `2px dashed ${
-                      isDragging
-                        ? theme.palette.primary.main
-                        : theme.palette.grey[400]
-                    }`,
+                    border: `2px dashed ${isDragging
+                      ? theme.palette.primary.main
+                      : theme.palette.grey[400]
+                      }`,
                     borderRadius: 2,
                     height: 100,
                     display: 'flex',
@@ -451,5 +510,6 @@ function AddProductPage() {
     </>
   );
 }
+
 
 export default AddProductPage;

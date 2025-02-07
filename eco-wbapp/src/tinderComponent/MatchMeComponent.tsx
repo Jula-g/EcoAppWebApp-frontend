@@ -1,8 +1,29 @@
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 const SwipeCards = () => {
-  const [cards, setCards] = useState<Card[]>(cardData);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/products");
+        const data = await response.json();
+        console.log("Fetched Products:", data);
+        setProducts(data);
+      } catch (error) {
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const [cards, setCards] = useState<Card[]>(products);
 
   return (
     <div
@@ -98,26 +119,27 @@ type Card = {
   image: string;
 };
 
-const cardData: Card[] = [
-  {
-    id: '1',
-    name: 'Lamp',
-    description: 'A modern desk lamp with a sleek design.',
-    image:
-      'https://m.media-amazon.com/images/I/61uLmGqbcVL._AC_UF894,1000_QL80_.jpg',
-  },
-  {
-    id: '2',
-    name: 'Desk',
-    description: 'A wooden desk for your workspace.',
-    image:
-      'https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/1c05d022-41c2-4072-8915-f3ac72780be0._SL480_.jpg',
-  },
-  {
-    id: '3',
-    name: 'Chair',
-    description: 'An ergonomic chair for your workspace.',
-    image:
-      'https://m.media-amazon.com/images/I/812Dxg5J9CL._AC_UF1000,1000_QL80_.jpg',
-  },
-];
+// const cardData: Card[] = [
+//   {
+//     id: '1',
+//     name: 'Lamp',
+//     description: 'A modern desk lamp with a sleek design.',
+//     image:
+//       'https://m.media-amazon.com/images/I/61uLmGqbcVL._AC_UF894,1000_QL80_.jpg',
+//   },
+//   {
+//     id: '2',
+//     name: 'Desk',
+//     description: 'A wooden desk for your workspace.',
+//     image:
+//       'https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/1c05d022-41c2-4072-8915-f3ac72780be0._SL480_.jpg',
+//   },
+//   {
+//     id: '3',
+//     name: 'Chair',
+//     description: 'An ergonomic chair for your workspace.',
+//     image:
+//       'https://m.media-amazon.com/images/I/812Dxg5J9CL._AC_UF1000,1000_QL80_.jpg',
+//   },
+// ];
+

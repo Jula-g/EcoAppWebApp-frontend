@@ -15,8 +15,11 @@ function LoginForm() {
   const onSubmit = useCallback(
     async (values: { username: string; password: string }) => {
       try {
+
+        console.log('vals:', values.username, values.password);
         const success = await login(values.username, values.password); // Call login
         if (success) {
+          console.log('user:',)
           console.log('Login successful!');
           navigate('/'); // Redirect to home page after successful login
         } else {
@@ -26,7 +29,7 @@ function LoginForm() {
         console.error('Login failed:', error);
         alert(
           error?.response?.data?.message ||
-            'An error occurred. Please try again.'
+          'An error occurred. Please try again.'
         );
       }
     },

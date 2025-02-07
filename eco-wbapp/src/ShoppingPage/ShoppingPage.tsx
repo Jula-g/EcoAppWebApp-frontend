@@ -7,33 +7,76 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Button,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import MenuAppBar from '../menu-bar/MenuAppBar';
 import ProductCard from '../home-page/ProductCard';
+import { useNavigate } from 'react-router-dom';
+import { isTokenExpired } from '../utils/authUtils';
 
 export default function ShoppingPage() {
   // --- Dummy product data ---
-  const products = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    name: `Product ${index + 1}`,
-    price: `${(5000 + index * 100).toFixed(2)} zł`,
-    image: 'https://via.placeholder.com/200x200',
-    condition: index % 2 === 0 ? 'Nowy' : 'Używany',
-    category: ['Meble', 'Żywność', 'Ubrania', 'Elektronika'][index % 4],
-  }));
+  // const products = Array.from({ length: 100 }, (_, index) => ({
+  //   id: index + 1,
+  //   name: `Product ${index + 1}`,
+  //   price: `${(5000 + index * 100).toFixed(2)} zł`,
+  //   image: 'https://via.placeholder.com/200x200',
+  //   condition: index % 2 === 0 ? 'Nowy' : 'Używany',
+  //   category: ['Meble', 'Żywność', 'Ubrania', 'Elektronika'][index % 4],
+  // }));
+
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/products");
+        const data = await response.json();
+        console.log("Fetched Products:", data);
+        setProducts(data);
+      } catch (error) {
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // --- States ---
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [newCondition, setNewCondition] = useState(false);
-  const [usedCondition, setUsedCondition] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState({
-    Meble: false,
-    Żywność: false,
-    Ubrania: false,
-    Elektronika: false,
+
+  const [selectedConditions, setSelectedConditions] = useState({
+    New: false,
+    Excellent: false,
+    Good: false,
+    Fair: false,
+    Poor: false,
   });
+
+  const [selectedCategories, setSelectedCategories] = useState({
+    Furniture: false,
+    Food: false,
+    Clothes: false,
+    Electronics: false,
+  });
+
+  const handleClick = () => {
+    const token = localStorage.getItem('authToken');
+    if (token && !isTokenExpired(token)) {
+      navigate('/add-product');
+    } else {
+      alert('You must be logged in to sell a product. Please log in to continue.');
+      navigate('/');
+    }
+  };
+
 
   // --- Scroll-based Search Bar Toggle ---
   const [showSearch, setShowSearch] = useState(true);
@@ -66,9 +109,8 @@ export default function ShoppingPage() {
         selectedCategories[product.category as keyof typeof selectedCategories];
       // Condition filter
       const conditionCheck =
-        (newCondition && product.condition === 'Nowy') ||
-        (usedCondition && product.condition === 'Używany') ||
-        (!newCondition && !usedCondition);
+        Object.values(selectedConditions).every((isChecked) => !isChecked) ||
+        selectedConditions[product.condition as keyof typeof selectedConditions];
 
       return categoryCheck && conditionCheck;
     })
@@ -96,6 +138,12 @@ export default function ShoppingPage() {
       [category]: !prev[category as keyof typeof selectedCategories],
     }));
   };
+  const handleConditionChange = (condition: string) => {
+    setSelectedConditions((prev) => ({
+      ...prev,
+      [condition]: !prev[condition as keyof typeof selectedConditions],
+    }));
+  };
 
   return (
     <>
@@ -118,7 +166,7 @@ export default function ShoppingPage() {
           }}
         >
           <TextField
-            placeholder="Szukaj"
+            placeholder="Search"
             variant="filled"
             value={searchQuery}
             onChange={handleSearchChange}
@@ -153,69 +201,100 @@ export default function ShoppingPage() {
             py: 2,
           }}
         >
-          {/* SIDEBAR */}
           <Box
             sx={{
               width: '20%',
-              backgroundColor: '#fff',
-              padding: '20px',
               borderRadius: '8px',
               position: 'sticky',
-              top: '80px',
               height: 'fit-content',
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{ marginBottom: '20px', color: '#000' }}
-            >
-              Kategorie
-            </Typography>
-            <FormGroup>
-              {Object.keys(selectedCategories).map((category) => (
-                <FormControlLabel
-                  key={category}
-                  control={
-                    <Checkbox
-                      checked={
-                        selectedCategories[
-                          category as keyof typeof selectedCategories
-                        ]
-                      }
-                      onChange={() => handleCategoryChange(category)}
-                    />
-                  }
-                  label={category}
-                />
-              ))}
-            </FormGroup>
 
-            <Typography
-              variant="h6"
-              sx={{ marginTop: '20px', marginBottom: '10px', color: '#000' }}
+            <Button
+              onClick={handleClick}
+              variant="contained"
+              sx={{
+                backgroundColor: '#123524',
+                color: '#EFE3C2',
+                padding: '10px',
+                width: '100%',
+                height: 'fit-content',
+                borderRadius: '8px',
+                fontSize: '25px',
+                fontFamily: 'Poppins',
+                elevation: 0,
+                fontWeight: 800,
+                textTransform: 'none',
+                marginBottom: '10px',
+                boxShadow: 'none',
+              }}
             >
-              Filtruj
-            </Typography>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newCondition}
-                    onChange={(e) => setNewCondition(e.target.checked)}
+              Sell product
+            </Button>
+
+            {/* SIDEBAR */}
+            <Box
+              sx={{
+                width: '85%',
+                backgroundColor: '#fff',
+                padding: '20px',
+                borderRadius: '8px',
+                position: 'sticky',
+                top: '80px',
+                height: 'fit-content',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ marginBottom: '20px', color: '#000' }}
+              >
+                Category
+              </Typography>
+              <FormGroup>
+                {Object.keys(selectedCategories).map((category) => (
+                  <FormControlLabel
+                    key={category}
+                    control={
+                      <Checkbox
+                        checked={
+                          selectedCategories[
+                          category as keyof typeof selectedCategories
+                          ]
+                        }
+                        onChange={() => handleCategoryChange(category)}
+                      />
+                    }
+                    label={category}
                   />
-                }
-                label="Nowe"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={usedCondition}
-                    onChange={(e) => setUsedCondition(e.target.checked)}
+                ))}
+              </FormGroup>
+
+              <Typography
+                variant="h6"
+                sx={{ marginTop: '20px', marginBottom: '10px', color: '#000' }}
+              >
+                Condition
+              </Typography>
+              <FormGroup>
+                {Object.keys(selectedConditions).map((condition) => (
+                  <FormControlLabel
+                    key={condition}
+                    control={
+                      <Checkbox
+                        checked={
+                          selectedConditions[
+                          condition as keyof typeof selectedConditions
+                          ]
+                        }
+                        onChange={() => handleConditionChange(condition)}
+                      />
+                    }
+                    label={condition}
                   />
-                }
-                label="Używane"
-              />
-            </FormGroup>
+                ))}
+              </FormGroup>
+            </Box>
+
           </Box>
 
           {/* MAIN CONTENT */}

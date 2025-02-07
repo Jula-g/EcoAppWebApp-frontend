@@ -3,9 +3,9 @@ import MenuAppBar from '../menu-bar/MenuAppBar';
 import OpeningComonent from './OpeningComonent';
 import ShopElement from './ShopElement';
 import DropPointElemtent from './DropPointElement';
+import { useEffect, useState } from 'react';
 import MatchMeElement from './MatchMeElement';
 import { useAuth } from '../authContext';
-import { useEffect } from 'react';
 
 function HomePage() {
   const { user } = useAuth(); // Access the logged-in user from AuthContext
