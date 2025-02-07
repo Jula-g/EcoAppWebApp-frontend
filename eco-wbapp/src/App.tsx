@@ -12,6 +12,7 @@ import { AuthProvider } from './authContext';
 import { ApiProvider } from './apiContext';
 import { Add } from '@mui/icons-material';
 import AddProductPage from './addProduct-page';
+import AccountPage from './account-page/AccountPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/home-page" element={<HomePage />} />
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/add-product" element={<AddProductPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/tinder" element={<MatchMe />} />

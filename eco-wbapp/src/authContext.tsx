@@ -2,9 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { EcoWebClient } from './EcoWebClient';
 
 type User = {
-  id: string;
-  username: string;
   email: string;
+  lastName: string;
+  name: string;
+  id: string;
 };
 
 type AuthContextType = {
@@ -27,13 +28,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     password: string
   ): Promise<boolean> => {
     try {
-      const { user } = await client.login(username, password);
-      setUser(user);
+      const { userData, token } = await client.login(username, password);
+      console.log('User data:', userData);
+
+      // validate token
+      const isTokenValid = await client.verifyToken(token);
+
+      if (!isTokenValid) {
+        console.error("Invalid token received, logging out...");
+        localStorage.removeItem('authUser');
+        localStorage.removeItem('authToken');
+        return false;
+      }
+
+      setUser(userData);
       localStorage.setItem('authUser', JSON.stringify(user)); // Save user in localStorage
       console.log('User logged in:', user);
       return true;
     } catch (error) {
       console.error('Login failed:', error);
+      localStorage.removeItem('authUser');
+      localStorage.removeItem('authToken');
       return false;
     }
   };
@@ -41,7 +56,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = () => {
     client.logout();
     setUser(null);
-    localStorage.removeItem('authUser'); // Remove user from localStorage
+    localStorage.removeItem('authUser');
+    localStorage.removeItem('authToken');
     console.log('User logged out');
   };
 
