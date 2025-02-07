@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 import MenuAppBar from '../menu-bar/MenuAppBar';
 import ProductCard from '../home-page/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import { isTokenExpired } from '../utils/authUtils';
 
 export default function ShoppingPage() {
   // --- Dummy product data ---
@@ -65,6 +66,16 @@ export default function ShoppingPage() {
     Clothes: false,
     Electronics: false,
   });
+
+  const handleClick = () => {
+    const token = localStorage.getItem('authToken');
+    if (token && !isTokenExpired(token)) {
+      navigate('/add-product');
+    } else {
+      alert('You must be logged in to sell a product. Please log in to continue.');
+      navigate('/');
+    }
+  };
 
 
   // --- Scroll-based Search Bar Toggle ---
@@ -200,7 +211,7 @@ export default function ShoppingPage() {
           >
 
             <Button
-              onClick={() => navigate('/add-product')}
+              onClick={handleClick}
               variant="contained"
               sx={{
                 backgroundColor: '#123524',

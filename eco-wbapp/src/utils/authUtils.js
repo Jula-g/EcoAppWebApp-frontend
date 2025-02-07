@@ -4,7 +4,7 @@ export function isTokenExpired(token) {
         const expirationTime = payload.exp * 1000; // exp is in seconds, converting to milliseconds
         return expirationTime < Date.now();
     } catch (error) {
-        // In case the token is not valid or the decoding fails
+        console.log('Error checking token expiration:', error);
         return true;
     }
 }
