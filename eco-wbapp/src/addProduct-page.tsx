@@ -14,11 +14,9 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import MenuAppBar from './menu-bar/MenuAppBar';
-import { useApi } from './apiContext';
 
 function AddProductPage() {
   const theme = useTheme();
-  const api = useApi(); // Use API client
 
   // Form state
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -84,68 +82,37 @@ function AddProductPage() {
     }
   };
 
-  /**
-   * Handles form submission
-   */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle form submissions
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const userId = 'MRgrch6uUdse4xDQUJLQ';
-    const formData = new FormData();
+    // navigate('/home-page'); //Im using this instead of console logs cuz they never work :)
 
-    // Append form fields
-    Object.keys(formValues).forEach((key) => {
-      const value = formValues[key as keyof typeof formValues];
-      if (typeof value === 'object') {
-        formData.append(key, JSON.stringify(value)); // Convert address to JSON string
-      } else {
-        formData.append(key, value);
-      }
-    });
+    // Gather form data
+    const form = new FormData(e.currentTarget);
+    const data = {
+      name: form.get('name'),
+      description: form.get('description'),
+      price: form.get('price'),
+      condition: form.get('condition'),
+      category: form.get('category'),
+      subcategory: form.get('subcategory'),
+      status: form.get('status'),
+      style: form.get('style'),
+      transactionType: form.get('transactionType'),
+      adress: {
+        street: form.get('adress.street'),
+        city: form.get('adress.city'),
+        zip: form.get('adress.zip'),
+      },
+      // Attach the file objects directly if you want to upload them via FormData
+      files: selectedImages,
+    };
 
-    // Append images as files
-    selectedImages.forEach((image) => {
-      formData.append('images', image);
-    });
-
-    try {
-      const response = await api.createProduct(
-        userId,
-        formValues as any,
-        selectedImages
-      );
-      if (response.success) {
-        alert('Product created successfully!');
-        // Reset form
-        setFormValues({
-          name: '',
-          description: '',
-          price: '',
-          condition: '',
-          category: '',
-          subcategory: '',
-          status: '',
-          style: '',
-          transactionType: '',
-          adress: { street: '', city: '', zip: '' },
-        });
-        setSelectedImages([]);
-      }
-      if (response.status === 403) {
-        alert('You are not authorized to create a product.');
-      } else {
-        alert('Failed to create product.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while creating the product.');
-    }
+    console.log('Form Data:', data);
+    // Perform your POST request or service call to create the product
   };
 
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    const { name, value } = event.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-  };
   return (
     <>
       <CssBaseline />
@@ -223,11 +190,12 @@ function AddProductPage() {
                 />
 
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Condition</InputLabel>
+                  <InputLabel id="condition-label">Condition</InputLabel>
                   <Select
+                    labelId="condition-label"
+                    id="condition"
                     name="condition"
-                    onChange={handleSelectChange}
-                    value={formValues.condition}
+                    label="Condition"
                   >
                     <MenuItem value="NEW">New</MenuItem>
                     <MenuItem value="USED">Used</MenuItem>
@@ -236,13 +204,7 @@ function AddProductPage() {
 
                 <FormControl fullWidth required sx={{ mb: 2 }}>
                   <InputLabel>Category</InputLabel>
-                  <Select
-                    name="category"
-                    id="category"
-                    label="Category"
-                    onChange={handleSelectChange}
-                    value={formValues.category}
-                  >
+                  <Select name="category" id="category" label="Category">
                     <MenuItem value="FASHION">Fashion</MenuItem>
                     <MenuItem value="ELECTRONICS">Electronics</MenuItem>
                   </Select>
@@ -250,13 +212,11 @@ function AddProductPage() {
 
                 {/* Subcategory */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Subcategory</InputLabel>
+                  <InputLabel id="subcategory-label">Subcategory</InputLabel>
                   <Select
                     id="subcategory"
                     name="subcategory"
                     label="Subcategory"
-                    onChange={handleSelectChange}
-                    value={formValues.subcategory}
                   >
                     <MenuItem value="CLOTHING">Clothing</MenuItem>
                     <MenuItem value="PHONES">Phones</MenuItem>
@@ -274,6 +234,7 @@ function AddProductPage() {
                   >
                     <MenuItem value="AVAILABLE">Available</MenuItem>
                     <MenuItem value="SOLD">Sold</MenuItem>
+                    <MenuItem value="RESERVED">Reserved</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -288,7 +249,8 @@ function AddProductPage() {
                     value={formValues.transactionType}
                   >
                     <MenuItem value="SALE">Sale</MenuItem>
-                    <MenuItem value="BARTER">Barter</MenuItem>
+                    <MenuItem value="EXCHANGE">Exchange</MenuItem>
+                    <MenuItem value="GIVEN_AWAY">Give away</MenuItem>
                   </Select>
                 </FormControl>
 

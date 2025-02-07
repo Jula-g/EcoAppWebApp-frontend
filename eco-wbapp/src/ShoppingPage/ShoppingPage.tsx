@@ -7,6 +7,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Button,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 
@@ -14,25 +15,47 @@ import MenuAppBar from '../menu-bar/MenuAppBar';
 import { useApi } from '../apiContext';
 
 import ProductCard from '../home-page/ProductCard';
-import { ProductDto } from '../EcoWebClient';
 
 export default function ShoppingPage() {
-  // Get the client from context
-  const api = useApi();
+  // --- Dummy product data ---
+  const products = Array.from({ length: 100 }, (_, index) => ({
+    id: index + 1,
+    name: `Product ${index + 1}`,
+    price: `${(5000 + index * 100).toFixed(2)} zł`,
+    image: 'https://via.placeholder.com/200x200',
+    condition: index % 2 === 0 ? 'Nowy' : 'Używany',
+    category: ['Meble', 'Żywność', 'Ubrania', 'Elektronika'][index % 4],
+  }));
 
-  const [products, setProducts] = useState<ProductDto[]>([]);
-
-  // State for search, pagination, and filters
+  // --- States ---
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [newCondition, setNewCondition] = useState(false);
-  const [usedCondition, setUsedCondition] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState({
-    Meble: false,
-    Żywność: false,
-    Ubrania: false,
-    Elektronika: false,
+
+  const [selectedConditions, setSelectedConditions] = useState({
+    New: false,
+    Excellent: false,
+    Good: false,
+    Fair: false,
+    Poor: false,
   });
+
+  const [selectedCategories, setSelectedCategories] = useState({
+    Furniture: false,
+    Food: false,
+    Clothes: false,
+    Electronics: false,
+  });
+
+  const handleClick = () => {
+    const token = localStorage.getItem('authToken');
+    if (token && !isTokenExpired(token)) {
+      navigate('/add-product');
+    } else {
+      alert('You must be logged in to sell a product. Please log in to continue.');
+      navigate('/');
+    }
+  };
+
 
   // Show/Hide search bar on scroll
   const [showSearch, setShowSearch] = useState(true);
@@ -84,8 +107,8 @@ export default function ShoppingPage() {
       const isNew = condition === 'nowy';
       const isUsed = condition === 'używany';
       const conditionCheck =
-        (newCondition && isNew) ||
-        (usedCondition && isUsed) ||
+        (newCondition && product.condition === 'Nowy') ||
+        (usedCondition && product.condition === 'Używany') ||
         (!newCondition && !usedCondition);
 
       return categoryCheck && conditionCheck;
@@ -120,130 +143,133 @@ export default function ShoppingPage() {
     }));
     setCurrentPage(1); // reset to page 1 on new filter
   };
+  const handleConditionChange = (condition: string) => {
+    setSelectedConditions((prev) => ({
+      ...prev,
+      [condition]: !prev[condition as keyof typeof selectedConditions],
+    }));
+  };
 
   return (
-    <Box sx={{ backgroundColor: '#EFE3C2', minHeight: '100vh' }}>
-      {/* Optional menu bar */}
-      <MenuAppBar />
-
-      {/* Sticky search bar */}
-      <Box
-        sx={{
-          position: 'sticky',
-          top: '64px',
-          zIndex: 1099,
-          backgroundColor: '#123524',
-          transition: 'transform 0.3s ease-in-out',
-          transform: showSearch ? 'translateY(0)' : 'translateY(-80px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          py: 2,
-          px: 2,
-        }}
-      >
-        <TextField
-          placeholder="Szukaj"
-          variant="filled"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          InputProps={{ disableUnderline: true }}
-          sx={{
-            width: '60%',
-            backgroundColor: '#FFFFFF',
-            borderRadius: '16px',
-            '& .MuiFilledInput-root': {
-              borderRadius: '16px',
-              height: '48px',
-              padding: 0,
-              alignItems: 'center',
-            },
-            '& .MuiFilledInput-input': {
-              padding: '0 12px',
-              lineHeight: 'normal',
-            },
-            '& .MuiFilledInput-root::before, & .MuiFilledInput-root::after': {
-              display: 'none',
-            },
-          }}
-        />
-      </Box>
-
-      {/* Main content + sidebar */}
-      <Box
-        sx={{
-          display: 'flex',
-          px: 2,
-          py: 2,
-          backgroundColor: '#EFE3C2',
-          marginTop: '80px',
-          gap: 2,
-        }}
-      >
-        {/* Sidebar */}
+    <>
+      <Box sx={{ backgroundColor: '#EFE3C2' }}>
+        {' '}
+        <MenuAppBar />
         <Box
           sx={{
-            width: '20%',
-            backgroundColor: '#fff',
-            padding: '20px',
-            borderRadius: '8px',
             position: 'sticky',
-            top: '80px',
-            height: 'fit-content',
+            top: '64px',
+            zIndex: 1099,
+            backgroundColor: '#123524',
+            transition: 'transform 0.3s ease-in-out',
+            transform: showSearch ? 'translateY(0)' : 'translateY(-80px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            py: 2,
+            px: 2,
           }}
         >
-          <Typography variant="h6" sx={{ marginBottom: '20px', color: '#000' }}>
-            Kategorie
-          </Typography>
-          <FormGroup>
-            {Object.keys(selectedCategories).map((category) => (
+          <TextField
+            placeholder="Szukaj"
+            variant="filled"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            InputProps={{ disableUnderline: true }}
+            sx={{
+              width: '60%',
+              backgroundColor: '#FFFFFF',
+              borderRadius: '16px',
+              '& .MuiFilledInput-root': {
+                borderRadius: '16px',
+                height: '48px',
+                padding: 0,
+                alignItems: 'center',
+              },
+              '& .MuiFilledInput-input': {
+                padding: '0 12px',
+                lineHeight: 'normal',
+              },
+              '& .MuiFilledInput-root::before, & .MuiFilledInput-root::after': {
+                display: 'none',
+              },
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            marginTop: '80px',
+            display: 'flex',
+            backgroundColor: '#EFE3C2',
+            minHeight: '200vh', // just to ensure scrolling
+            px: 2,
+            py: 2,
+          }}
+        >
+          {/* SIDEBAR */}
+          <Box
+            sx={{
+              width: '20%',
+              backgroundColor: '#fff',
+              padding: '20px',
+              borderRadius: '8px',
+              position: 'sticky',
+              top: '80px',
+              height: 'fit-content',
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ marginBottom: '20px', color: '#000' }}
+            >
+              Kategorie
+            </Typography>
+            <FormGroup>
+              {Object.keys(selectedCategories).map((category) => (
+                <FormControlLabel
+                  key={category}
+                  control={
+                    <Checkbox
+                      checked={
+                        selectedCategories[
+                          category as keyof typeof selectedCategories
+                        ]
+                      }
+                      onChange={() => handleCategoryChange(category)}
+                    />
+                  }
+                  label={category}
+                />
+              ))}
+            </FormGroup>
+
+            <Typography
+              variant="h6"
+              sx={{ marginTop: '20px', marginBottom: '10px', color: '#000' }}
+            >
+              Filtruj
+            </Typography>
+            <FormGroup>
               <FormControlLabel
-                key={category}
                 control={
                   <Checkbox
-                    checked={
-                      selectedCategories[
-                        category as keyof typeof selectedCategories
-                      ]
-                    }
-                    onChange={() => handleCategoryChange(category)}
+                    checked={newCondition}
+                    onChange={(e) => setNewCondition(e.target.checked)}
                   />
                 }
-                label={category}
+                label="Nowe"
               />
-            ))}
-          </FormGroup>
-
-          <Typography variant="h6" sx={{ mt: 2, mb: 1, color: '#000' }}>
-            Filtruj
-          </Typography>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={newCondition}
-                  onChange={(e) => {
-                    setNewCondition(e.target.checked);
-                    setCurrentPage(1);
-                  }}
-                />
-              }
-              label="Nowe"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={usedCondition}
-                  onChange={(e) => {
-                    setUsedCondition(e.target.checked);
-                    setCurrentPage(1);
-                  }}
-                />
-              }
-              label="Używane"
-            />
-          </FormGroup>
-        </Box>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={usedCondition}
+                    onChange={(e) => setUsedCondition(e.target.checked)}
+                  />
+                }
+                label="Używane"
+              />
+            </FormGroup>
+          </Box>
 
         {/* Main products grid */}
         <Box sx={{ flex: 1, marginLeft: '20px' }}>
