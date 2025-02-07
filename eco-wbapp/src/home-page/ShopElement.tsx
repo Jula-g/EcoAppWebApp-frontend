@@ -1,7 +1,14 @@
 import { Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import CatSelectComponent from './CatSelectComponent';
 
 export default function ShopElement() {
+  const navigate = useNavigate(); // Hook for navigation
+
+  const handleRedirect = () => {
+    navigate('/shop-page'); // Redirect to the shop page
+  };
+
   return (
     <Box
       sx={{
@@ -58,6 +65,7 @@ export default function ShopElement() {
             marginTop: '40px',
             boxShadow: 'none',
           }}
+          onClick={handleRedirect} // Add click event
         >
           Shop Now
         </Button>

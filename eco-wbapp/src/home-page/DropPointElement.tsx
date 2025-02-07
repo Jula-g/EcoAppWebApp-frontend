@@ -1,7 +1,14 @@
 import { Box, Button, Typography } from '@mui/material';
 import DropPointComponent from './DropPointComonent';
+import { useNavigate } from 'react-router-dom';
 
 export default function DropPointElemtent() {
+  const navigate = useNavigate(); // Hook for navigation
+
+  const handleRedirect = () => {
+    navigate('/drop-point'); // Redirect to the shop page
+  };
+
   return (
     <Box
       sx={{
@@ -42,6 +49,7 @@ export default function DropPointElemtent() {
 
         <Button
           variant="contained"
+          onClick={handleRedirect}
           sx={{
             backgroundColor: '#123524',
             color: '#EFE3C2',

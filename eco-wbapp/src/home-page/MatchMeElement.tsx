@@ -1,7 +1,14 @@
 import { Box, Button, Typography } from '@mui/material';
 import MatchMeComponent from './MatchMeComponent';
+import { useNavigate } from 'react-router-dom';
 
 export default function MatchMeElement() {
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate('/match-finder'); // Redirect to the shop page
+  };
+
   return (
     <Box
       sx={{
@@ -46,6 +53,7 @@ export default function MatchMeElement() {
 
         <Button
           variant="contained"
+          onClick={handleRedirect}
           sx={{
             backgroundColor: '#123524',
             color: '#EFE3C2',

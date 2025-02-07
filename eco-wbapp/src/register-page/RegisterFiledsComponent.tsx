@@ -16,16 +16,19 @@ function RegisterForm() {
   const onSubmit = useCallback(
     async (values: any) => {
       try {
-        const response = await apiClient.register(
-          values.username,
-          values.password,
-          values.email,
-          values.name,
-          values.lastName,
-          values.phoneNumber
-        );
+        const response = await apiClient.register({
+          username: values.username,
+          password: values.password,
+          email: values.email,
+          name: values.name,
+          lastName: values.lastName,
+          phoneNumber: values.phoneNumber,
+        });
 
-        if (response.status === 201 || response.data.statusCode === 201) {
+        if (
+          response.status === 201 ||
+          (response.data as any).statusCode === 201
+        ) {
           alert('Registration successful!');
           navigate('/');
         } else {
