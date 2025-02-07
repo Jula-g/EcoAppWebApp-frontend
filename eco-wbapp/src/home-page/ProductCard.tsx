@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   Card,
@@ -8,80 +7,59 @@ import {
   Button,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-interface Product {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  condition: string;
-  category: string;
-}
+import { ProductDto } from '../EcoWebClient';
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductDto;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  // Fallback image if no base64 images exist
+  const firstImage =
+    product.images && product.images.length > 0
+      ? product.images[0]
+      : 'https://via.placeholder.com/140x140';
+
+  // Price is a string, convert to float for display
+  const parsedPrice = parseFloat(product.price || '0');
+  const priceDisplay = !isNaN(parsedPrice)
+    ? `${parsedPrice.toFixed(2)} zł`
+    : '---';
+
   return (
     <Card
       sx={{
         display: 'flex',
-        backgroundColor: '#fff', // White card background
-        color: '#FFFFFF', // Light text (you may want to adjust if background is white)
+        backgroundColor: '#fff',
+        color: '#123524',
         p: 2,
         mb: 2,
         borderRadius: 2,
       }}
     >
-      {/* IMAGE SECTION */}
       <CardMedia
         component="img"
-        sx={{
-          width: 140,
-          height: 140,
-          objectFit: 'cover',
-        }}
-        image={product.image}
+        sx={{ width: 140, height: 140, objectFit: 'cover' }}
+        // If your base64 includes "data:image/jpeg;base64," already, just do image={firstImage}
+        image={firstImage}
         alt={product.name}
       />
-
-      {/* CONTENT SECTION */}
       <CardContent
         sx={{ flex: 1, ml: 2, display: 'flex', flexDirection: 'column' }}
       >
-        {/* ROW: Name (left) & Price (right) */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{ fontFamily: 'Poppins', color: '#123524', m: 0 }}
-          >
-            {product.name}
-          </Typography>
-
-          <Typography
-            variant="h5"
-            sx={{ fontFamily: 'Poppins', color: '#123524', m: 0 }}
-          >
-            {product.price}
-          </Typography>
+        {/* Name and price in one row */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h5">{product.name}</Typography>
+          <Typography variant="h5">{priceDisplay}</Typography>
         </Box>
 
-        {/* CONDITION OR OTHER DETAILS */}
-        <Typography
-          variant="body2"
-          sx={{ mt: 2, fontFamily: 'Poppins', color: '#123524' }}
-        >
+        {/* Additional fields */}
+        <Typography variant="body2" sx={{ mt: 1 }}>
           Condition: {product.condition}
         </Typography>
+        <Typography variant="body2">Category: {product.category}</Typography>
 
-        {/* BUTTON (right-aligned if desired) */}
+        {/* Add to cart button at the bottom */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 'auto' }}>
           <Button
             size="medium"
@@ -89,8 +67,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             sx={{
               mt: 2,
               backgroundColor: '#123524',
-              fontFamily: 'Poppins',
               color: 'white',
+              '&:hover': { backgroundColor: '#0e291b' },
             }}
           >
             ADD TO CART

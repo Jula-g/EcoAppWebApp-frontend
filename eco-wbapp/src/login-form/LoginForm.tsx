@@ -5,35 +5,31 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Typography } from '@mui/material';
-import { useAuth } from '../authContext';
+import { useApi } from '../apiContext';
 
 function LoginForm() {
-  const { login } = useAuth(); // Access the login function from AuthContext
   const navigate = useNavigate();
 
   // Handle form submission
   const onSubmit = useCallback(
     async (values: { username: string; password: string }) => {
       try {
-
-        console.log('vals:', values.username, values.password);
         const success = await login(values.username, values.password); // Call login
         if (success) {
-          console.log('user:',)
           console.log('Login successful!');
           navigate('/'); // Redirect to home page after successful login
         } else {
-          alert('Invalid credentials. Please try again.');
+          formik.setFieldError('username', 'Invalid username or password');
         }
       } catch (error: any) {
         console.error('Login failed:', error);
         alert(
           error?.response?.data?.message ||
-          'An error occurred. Please try again.'
+            'An error occurred. Please try again.'
         );
       }
     },
-    [login, navigate]
+    [apiClient, navigate]
   );
 
   // Form validation schema

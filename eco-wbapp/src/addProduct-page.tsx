@@ -10,52 +10,41 @@ import {
   Select,
   MenuItem,
   Grid,
-  useTheme, // <-- Import this to style drag area feedback
+  useTheme,
+  SelectChangeEvent,
 } from '@mui/material';
-import { useAuth } from './authContext';
 import MenuAppBar from './menu-bar/MenuAppBar';
-import { useApi } from './apiContext';
-import { useNavigate } from 'react-router-dom';
-
 
 function AddProductPage() {
-  const { user } = useAuth();
   const theme = useTheme();
-  const navigate = useNavigate();
 
-  const apiClient = useApi();
-
-  const conditions = ["New", "Excellent", "Good", "Fair", "Poor"];
-  const categories = ["Food", "Furniture", "Women's Clothing", "Men's Clothing", "Electronics", "Books"];
-  const subcategories: Record<string, string[]> = {
-    Food: ["Fruits", "Vegetables", "Snacks", "Conserves", "Bakery", "Canned Food", "Grains", "Sweets", "Others"],
-    Furniture: ["Tables", "Chairs", "Beds", "Sofas", "Closets", "Desks", "Lamps", "Decoration", "Bookshelves", "Rugs", "Storage", "Outdoor Furniture", "Other Furniture"],
-    "Women's Clothing": ["Women's Shirts", "Women's Pants", "Women's Jackets", "Dresses", "Skirts", "Women's Shorts", "Women's Sweaters", "Women's Sportswear", "Women's Coats", "Women's Shoes", "Women's Accessories"],
-    "Men's Clothing": ["Men's Shirts", "Men's Pants", "Men's Jackets", "Men's Shorts", "Men's Sweaters", "Men's Sportswear", "Men's Coats", "Men's Shoes", "Men's Accessories"],
-    Electronics: ["Mobile Phones", "Computers", "TV", "Cameras", "Games and Consoles", "Smartwatches", "Headphones", "Speakers", "Household Appliances", "Printers", "Storage Devices", "Other Electronics"],
-    Books: ["Fiction", "Non-Fiction", "Textbooks", "Children's Books", "Biographies", "Mystery", "Fantasy", "Science Fiction", "History", "Romance", "Graphic Novels", "Travel", "Cooking", "Other Books"],
-  };
-
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-
-
-  // State to track uploaded images for preview
+  // Form state
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-
-  // State to highlight drop zone when dragging
   const [isDragging, setIsDragging] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      console.log('AddProductPage loaded by user:', user);
-    } else {
-      console.log('No user is logged in on AddProductPage.');
-    }
-  }, [user]);
+  const [formValues, setFormValues] = useState({
+    name: '',
+    description: '',
+    price: '',
+    condition: '',
+    category: '',
+    subcategory: '',
+    status: '',
+    style: '',
+    transactionType: '',
+    adress: { street: '', city: '', zip: '' },
+  });
 
   /**
-   * Convert FileList to an array and set in state for preview.
+   * Handles input changes in the form
+   */
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+  };
+  /**
+   * Handles file selection via input or drag-and-drop
    */
   const handleFileChange = (files: FileList) => {
     const filesArray = Array.from(files);
@@ -63,7 +52,7 @@ function AddProductPage() {
   };
 
   /**
-   * Drag-and-Drop Handlers
+   * Handles drag events
    */
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -71,10 +60,6 @@ function AddProductPage() {
     if (event.dataTransfer.files) {
       handleFileChange(event.dataTransfer.files);
     }
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
   };
 
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
@@ -87,12 +72,10 @@ function AddProductPage() {
     setIsDragging(false);
   };
 
-  // Trigger hidden input when zone is clicked
   const handleZoneClick = () => {
     document.getElementById('image-upload')?.click();
   };
 
-  // File input change (triggered by button or drop zone click)
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       handleFileChange(event.target.files);
@@ -100,69 +83,42 @@ function AddProductPage() {
   };
 
   // Handle form submissions
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // navigate('/home-page'); //Im using this instead of console logs cuz they never work :)
 
     // Gather form data
     const form = new FormData(e.currentTarget);
-    const formData = new FormData();
+    const data = {
+      name: form.get('name'),
+      description: form.get('description'),
+      price: form.get('price'),
+      condition: form.get('condition'),
+      category: form.get('category'),
+      subcategory: form.get('subcategory'),
+      status: form.get('status'),
+      style: form.get('style'),
+      transactionType: form.get('transactionType'),
+      adress: {
+        street: form.get('adress.street'),
+        city: form.get('adress.city'),
+        zip: form.get('adress.zip'),
+      },
+      // Attach the file objects directly if you want to upload them via FormData
+      files: selectedImages,
+    };
 
-    // Append text fields to formData
-    formData.append("name", form.get("name") as string);
-    formData.append("description", form.get("description") as string);
-    formData.append("price", form.get("price") as string);
-    formData.append("condition", form.get("condition") as string);
-    formData.append("category", form.get("category") as string);
-    formData.append("subcategory", form.get("subcategory") as string);
-    formData.append("status", form.get("status") as string);
-    formData.append("style", form.get("style") as string);
-    formData.append("transactionType", form.get("transactionType") as string);
-
-    // Append address fields
-    formData.append("adress.street", form.get("adress.street") as string);
-    formData.append("adress.city", form.get("adress.city") as string);
-    formData.append("adress.zip", form.get("adress.zip") as string);
-
-    // Append images to formData
-    selectedImages.forEach((image) => {
-      formData.append("images", image);
-    });
-
-    console.log("Form Data:", formData);
-
-    // Perform POST request or service call to create the product
-    try {
-      const response = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create product");
-      }
-
-      const result = await response.json();
-      console.log("Product created successfully!", result);
-    } catch (error) {
-      console.error("Error creating product:", error);
-    }
+    console.log('Form Data:', data);
+    // Perform your POST request or service call to create the product
   };
 
   return (
     <>
       <CssBaseline />
-
-      {/* Main wrapper with the same background color as your HomePage */}
       <Box sx={{ backgroundColor: '#EFE3C2', minHeight: '100vh' }}>
-        {/* Top Navigation Bar */}
         <MenuAppBar />
 
-        {/* Main content area */}
         <Box
           sx={{
             width: '100%',
@@ -185,7 +141,6 @@ function AddProductPage() {
             Add New Product
           </Typography>
 
-          {/* Two-column form layout */}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -199,7 +154,6 @@ function AddProductPage() {
             }}
           >
             <Grid container spacing={3}>
-              {/* LEFT COLUMN: Form Fields */}
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Name"
@@ -208,6 +162,8 @@ function AddProductPage() {
                   required
                   fullWidth
                   sx={{ mb: 2 }}
+                  onChange={handleInputChange}
+                  value={formValues.name}
                 />
                 <TextField
                   label="Description"
@@ -218,6 +174,8 @@ function AddProductPage() {
                   required
                   fullWidth
                   sx={{ mb: 2 }}
+                  onChange={handleInputChange}
+                  value={formValues.description}
                 />
                 <TextField
                   label="Price"
@@ -227,70 +185,52 @@ function AddProductPage() {
                   required
                   fullWidth
                   sx={{ mb: 2 }}
+                  onChange={handleInputChange}
+                  value={formValues.price}
                 />
 
-                {/* Condition */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
                   <InputLabel id="condition-label">Condition</InputLabel>
-                  <Select labelId="condition-label" id="condition" name="condition" label="Condition">
-                    {conditions.map((condition) => (
-                      <MenuItem key={condition} value={condition}>
-                        {condition}
-                      </MenuItem>
-                    ))}
+                  <Select
+                    labelId="condition-label"
+                    id="condition"
+                    name="condition"
+                    label="Condition"
+                  >
+                    <MenuItem value="NEW">New</MenuItem>
+                    <MenuItem value="USED">Used</MenuItem>
                   </Select>
                 </FormControl>
 
-                {/* Category */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel id="category-label">Category</InputLabel>
-                  <Select
-                    labelId="category-label"
-                    id="category"
-                    name="category"
-                    label="Category"
-                    value={selectedCategory}
-                    onChange={(e) => {
-                      setSelectedCategory(e.target.value);
-                      setSelectedSubcategory("");
-                    }}
-                  >
-                    {categories.map((category) => (
-                      <MenuItem key={category} value={category}>
-                        {category}
-                      </MenuItem>
-                    ))}
+                  <InputLabel>Category</InputLabel>
+                  <Select name="category" id="category" label="Category">
+                    <MenuItem value="FASHION">Fashion</MenuItem>
+                    <MenuItem value="ELECTRONICS">Electronics</MenuItem>
                   </Select>
                 </FormControl>
 
                 {/* Subcategory */}
-                <FormControl fullWidth required sx={{ mb: 2 }} disabled={!selectedCategory}>
+                <FormControl fullWidth required sx={{ mb: 2 }}>
                   <InputLabel id="subcategory-label">Subcategory</InputLabel>
                   <Select
-                    labelId="subcategory-label"
                     id="subcategory"
                     name="subcategory"
                     label="Subcategory"
-                    value={selectedSubcategory}
-                    onChange={(e) => setSelectedSubcategory(e.target.value)}
                   >
-                    {selectedCategory &&
-                      subcategories[selectedCategory].map((subcategory) => (
-                        <MenuItem key={subcategory} value={subcategory}>
-                          {subcategory}
-                        </MenuItem>
-                      ))}
+                    <MenuItem value="CLOTHING">Clothing</MenuItem>
+                    <MenuItem value="PHONES">Phones</MenuItem>
                   </Select>
                 </FormControl>
 
-                {/* Status */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel id="status-label">Status</InputLabel>
+                  <InputLabel>Status</InputLabel>
                   <Select
-                    labelId="status-label"
                     id="status"
                     name="status"
                     label="Status"
+                    onChange={handleSelectChange}
+                    value={formValues.status}
                   >
                     <MenuItem value="AVAILABLE">Available</MenuItem>
                     <MenuItem value="SOLD">Sold</MenuItem>
@@ -300,14 +240,13 @@ function AddProductPage() {
 
                 {/* Transaction Type */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel id="transactionType-label">
-                    Transaction Type
-                  </InputLabel>
+                  <InputLabel>Transaction Type</InputLabel>
                   <Select
-                    labelId="transactionType-label"
                     id="transactionType"
                     name="transactionType"
                     label="Transaction Type"
+                    onChange={handleSelectChange}
+                    value={formValues.transactionType}
                   >
                     <MenuItem value="SALE">Sale</MenuItem>
                     <MenuItem value="EXCHANGE">Exchange</MenuItem>
@@ -315,17 +254,17 @@ function AddProductPage() {
                   </Select>
                 </FormControl>
 
-                {/* Style */}
                 <TextField
                   label="Style (optional)"
                   variant="outlined"
                   name="style"
                   fullWidth
                   sx={{ mb: 2 }}
+                  onChange={handleInputChange}
+                  value={formValues.style}
                 />
               </Grid>
 
-              {/* RIGHT COLUMN */}
               <Grid item xs={12} md={6}>
                 {/* Address */}
                 <Typography variant="h6" sx={{ mb: '40px' }}>
@@ -381,10 +320,11 @@ function AddProductPage() {
                   onClick={handleZoneClick}
                   sx={{
                     cursor: 'pointer',
-                    border: `2px dashed ${isDragging
-                      ? theme.palette.primary.main
-                      : theme.palette.grey[400]
-                      }`,
+                    border: `2px dashed ${
+                      isDragging
+                        ? theme.palette.primary.main
+                        : theme.palette.grey[400]
+                    }`,
                     borderRadius: 2,
                     height: 100,
                     display: 'flex',
@@ -446,70 +386,24 @@ function AddProductPage() {
                     );
                   })}
                 </Box>
-
-                <Typography
-                  variant="body2"
-                  sx={{ mt: 1, color: 'text.secondary' }}
-                >
-                  Select or drop multiple images to showcase your product from
-                  different angles.
-                </Typography>
-
-                {/* Submit Button (spans both columns) */}
-                <Box
+                <Button
+                  variant="contained"
+                  type="submit"
                   sx={{
+                    backgroundColor: '#123524',
+                    color: '#EFE3C2',
                     width: '100%',
-                    mt: 4,
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    sx={{
-                      backgroundColor: '#123524',
-                      color: '#EFE3C2',
-                      width: '100%',
-                      fontSize: '20px',
-                      fontFamily: 'Comfortaa',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    Create Product
-                  </Button>
-                </Box>
+                  Create Product
+                </Button>
               </Grid>
             </Grid>
           </Box>
-        </Box>
-
-        {/* Footer */}
-        <Box
-          sx={{
-            width: '100%',
-            backgroundColor: '#123524',
-            color: '#ffffff',
-            padding: '30px 20px',
-            textAlign: 'center',
-            marginTop: '60px',
-            boxSizing: 'border-box',
-          }}
-        >
-          <Typography
-            variant="body1"
-            sx={{
-              fontFamily: 'Poppins',
-              fontSize: '16px',
-              color: '#85A947',
-            }}
-          >
-            &copy; {new Date().getFullYear()} EcoStore. Crafted with care for
-            our planet.
-          </Typography>
         </Box>
       </Box>
     </>
   );
 }
-
 
 export default AddProductPage;
