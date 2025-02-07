@@ -12,15 +12,36 @@ function LoginForm() {
 
   const apiClient = useApi();
 
-  let onSubmit = useCallback(
-    (values: { username: string; password: string }, formik: any) => {
-      apiClient.login(values).then((response) => {
-        if (response.success) {
-          navigate('/home-page');
+  // let onSubmit = useCallback(
+  //   (values: { username: string; password: string }, formik: any) => {
+  //     apiClient.login(values).then((response) => {
+  //       if (response.success) {
+  //         navigate('/home-page');
+  //       } else {
+  //         formik.setFieldError('username', 'Invalid username or password');
+  //       }
+  //     });
+  //   },
+  //   [apiClient, navigate]
+  // );
+
+  const onSubmit = useCallback(
+    async (values: { username: string; password: string }, formik: any) => {
+      try {
+        const success = await apiClient.login(values.username, values.password); // Call login
+        if (success) {
+          console.log('Login successful!');
+          navigate('/'); // Redirect to home page after successful login
         } else {
           formik.setFieldError('username', 'Invalid username or password');
         }
-      });
+      } catch (error: any) {
+        console.error('Login failed:', error);
+        alert(
+          error?.response?.data?.message ||
+            'An error occurred. Please try again.'
+        );
+      }
     },
     [apiClient, navigate]
   );

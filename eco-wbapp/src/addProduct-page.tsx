@@ -18,7 +18,7 @@ import { useApi } from './apiContext';
 
 function AddProductPage() {
   const theme = useTheme();
-  const api = useApi(); // Use API client
+  const api = useApi();
 
   // Form state
   const [selectedImages, setSelectedImages] = useState<File[]>([]);

@@ -28,15 +28,25 @@ export default function ShoppingPage() {
   const [newCondition, setNewCondition] = useState(false);
   const [usedCondition, setUsedCondition] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState({
-    Meble: false,
-    Żywność: false,
-    Ubrania: false,
-    Elektronika: false,
+    Furniture: false,
+    Food: false,
+    Clothes: false,
+    Electronics: false,
   });
 
   // Show/Hide search bar on scroll
   const [showSearch, setShowSearch] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  // const handleClick = () => {
+  //   const token = localStorage.getItem('authToken');
+  //   if (token && !isTokenExpired(token)) {
+  //     navigate('/add-product');
+  //   } else {
+  //     alert('You must be logged in to sell a product. Please log in to continue.');
+  //     navigate('/');
+  //   }
+  // };
 
   // Fetch products on mount
   useEffect(() => {
