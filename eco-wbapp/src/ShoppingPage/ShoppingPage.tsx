@@ -50,11 +50,15 @@ export default function ShoppingPage() {
   // --- States ---
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [newCondition, setNewCondition] = useState(false);
-  const [excellentCondition, setExcellentCondition] = useState(false);
-  const [goodCondition, setGoodCondition] = useState(false);
-  const [fairCondition, setFairCondition] = useState(false);
-  const [poorCondition, setPoorCondition] = useState(false);
+
+  const [selectedConditions, setSelectedConditions] = useState({
+    New: false,
+    Excellent: false,
+    Good: false,
+    Fair: false,
+    Poor: false,
+  });
+
   const [selectedCategories, setSelectedCategories] = useState({
     Furniture: false,
     Food: false,
@@ -94,12 +98,8 @@ export default function ShoppingPage() {
         selectedCategories[product.category as keyof typeof selectedCategories];
       // Condition filter
       const conditionCheck =
-        (newCondition && product.condition === 'New') ||
-        (excellentCondition && product.condition === 'Excellent') ||
-        (goodCondition && product.condition === 'Good') ||
-        (fairCondition && product.condition === 'Fair') ||
-        (poorCondition && product.condition === 'Poor') ||
-        (!newCondition && !excellentCondition && !goodCondition && !fairCondition && !poorCondition);
+        Object.values(selectedConditions).every((isChecked) => !isChecked) ||
+        selectedConditions[product.condition as keyof typeof selectedConditions];
 
       return categoryCheck && conditionCheck;
     })
@@ -125,6 +125,12 @@ export default function ShoppingPage() {
     setSelectedCategories((prev) => ({
       ...prev,
       [category]: !prev[category as keyof typeof selectedCategories],
+    }));
+  };
+  const handleConditionChange = (condition: string) => {
+    setSelectedConditions((prev) => ({
+      ...prev,
+      [condition]: !prev[condition as keyof typeof selectedConditions],
     }));
   };
 
@@ -194,7 +200,7 @@ export default function ShoppingPage() {
           >
 
             <Button
-              // onClick={() => navigator('/')}
+              onClick={() => navigate('/add-product')}
               variant="contained"
               sx={{
                 backgroundColor: '#123524',
@@ -259,51 +265,22 @@ export default function ShoppingPage() {
                 Condition
               </Typography>
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={newCondition}
-                      onChange={(e) => setNewCondition(e.target.checked)}
-                    />
-                  }
-                  label="New"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={excellentCondition}
-                      onChange={(e) => setExcellentCondition(e.target.checked)}
-                    />
-                  }
-                  label="Excellent"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={goodCondition}
-                      onChange={(e) => setGoodCondition(e.target.checked)}
-                    />
-                  }
-                  label="Good"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={fairCondition}
-                      onChange={(e) => setFairCondition(e.target.checked)}
-                    />
-                  }
-                  label="Fair"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={poorCondition}
-                      onChange={(e) => setPoorCondition(e.target.checked)}
-                    />
-                  }
-                  label="Poor"
-                />
+                {Object.keys(selectedConditions).map((condition) => (
+                  <FormControlLabel
+                    key={condition}
+                    control={
+                      <Checkbox
+                        checked={
+                          selectedConditions[
+                          condition as keyof typeof selectedConditions
+                          ]
+                        }
+                        onChange={() => handleConditionChange(condition)}
+                      />
+                    }
+                    label={condition}
+                  />
+                ))}
               </FormGroup>
             </Box>
 
