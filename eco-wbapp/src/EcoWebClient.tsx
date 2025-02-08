@@ -106,8 +106,8 @@ export class EcoWebClient {
     const userData = await this.getUser(userId); // Get user info using userId
     console.log('user:', userData);
 
-    localStorage.setItem('authUser', userData); // Save user data to local storage
-    localStorage.setItem('authToken', token); // Save token to local storage
+    // localStorage.setItem('authUser', userData); // Save user data to local storage
+    // localStorage.setItem('authToken', token); // Save token to local storage
     this.client.defaults.headers.Authorization = `Bearer ${token}`; // Update Axios headers
 
     return { userData, token }; // Return user and token

@@ -35,16 +35,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const isTokenValid = await client.verifyToken(token);
 
       if (!isTokenValid) {
-        Copy-new-damian
         console.error('Invalid token received, logging out...');
-
         localStorage.removeItem('authUser');
         localStorage.removeItem('authToken');
         return false;
       }
 
       setUser(userData);
+      localStorage.setItem('authToken', JSON.stringify(token));
       localStorage.setItem('authUser', JSON.stringify(user)); // Save user in localStorage
+      console.log('saves user:', JSON.stringify(user));
       console.log('User logged in:', user);
       return true;
     } catch (error) {
@@ -65,6 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const storedUser = localStorage.getItem('authUser');
+    console.log('Stored user:', storedUser);
     if (storedUser) {
       setUser(JSON.parse(storedUser));
       console.log('User session restored:', JSON.parse(storedUser));

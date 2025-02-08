@@ -15,10 +15,26 @@ import {
 } from '@mui/material';
 import MenuAppBar from './menu-bar/MenuAppBar';
 import { useApi } from './apiContext';
+import { useNavigate } from 'react-router-dom';
 
 function AddProductPage() {
   const theme = useTheme();
   const api = useApi();
+  const navigate = useNavigate();
+
+  const conditions = ["New", "Excellent", "Good", "Fair", "Poor"];
+  const categories = ["Food", "Furniture", "Women's Clothing", "Men's Clothing", "Electronics", "Books"];
+  const subcategories: Record<string, string[]> = {
+    Food: ["Fruits", "Vegetables", "Snacks", "Conserves", "Bakery", "Canned Food", "Grains", "Sweets", "Others"],
+    Furniture: ["Tables", "Chairs", "Beds", "Sofas", "Closets", "Desks", "Lamps", "Decoration", "Bookshelves", "Rugs", "Storage", "Outdoor Furniture", "Other Furniture"],
+    "Women's Clothing": ["Women's Shirts", "Women's Pants", "Women's Jackets", "Dresses", "Skirts", "Women's Shorts", "Women's Sweaters", "Women's Sportswear", "Women's Coats", "Women's Shoes", "Women's Accessories"],
+    "Men's Clothing": ["Men's Shirts", "Men's Pants", "Men's Jackets", "Men's Shorts", "Men's Sweaters", "Men's Sportswear", "Men's Coats", "Men's Shoes", "Men's Accessories"],
+    Electronics: ["Mobile Phones", "Computers", "TV", "Cameras", "Games and Consoles", "Smartwatches", "Headphones", "Speakers", "Household Appliances", "Printers", "Storage Devices", "Other Electronics"],
+    Books: ["Fiction", "Non-Fiction", "Textbooks", "Children's Books", "Biographies", "Mystery", "Fantasy", "Science Fiction", "History", "Romance", "Graphic Novels", "Travel", "Cooking", "Other Books"],
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
 
   // Form state
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -222,73 +238,89 @@ function AddProductPage() {
                   value={formValues.price}
                 />
 
+                {/* Condition */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Condition</InputLabel>
-                  <Select
-                    name="condition"
-                    onChange={handleSelectChange}
-                    value={formValues.condition}
-                  >
-                    <MenuItem value="NEW">New</MenuItem>
-                    <MenuItem value="USED">Used</MenuItem>
+                  <InputLabel id="condition-label">Condition</InputLabel>
+                  <Select labelId="condition-label" id="condition" name="condition" label="Condition">
+                    {conditions.map((condition) => (
+                      <MenuItem key={condition} value={condition}>
+                        {condition}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
+                {/* Category */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Category</InputLabel>
+                  <InputLabel id="category-label">Category</InputLabel>
                   <Select
-                    name="category"
+                    labelId="category-label"
                     id="category"
+                    name="category"
                     label="Category"
-                    onChange={handleSelectChange}
-                    value={formValues.category}
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      setSelectedSubcategory("");
+                    }}
                   >
-                    <MenuItem value="FASHION">Fashion</MenuItem>
-                    <MenuItem value="ELECTRONICS">Electronics</MenuItem>
+                    {categories.map((category) => (
+                      <MenuItem key={category} value={category}>
+                        {category}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
                 {/* Subcategory */}
-                <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Subcategory</InputLabel>
+                <FormControl fullWidth required sx={{ mb: 2 }} disabled={!selectedCategory}>
+                  <InputLabel id="subcategory-label">Subcategory</InputLabel>
                   <Select
+                    labelId="subcategory-label"
                     id="subcategory"
                     name="subcategory"
                     label="Subcategory"
-                    onChange={handleSelectChange}
-                    value={formValues.subcategory}
+                    value={selectedSubcategory}
+                    onChange={(e) => setSelectedSubcategory(e.target.value)}
                   >
-                    <MenuItem value="CLOTHING">Clothing</MenuItem>
-                    <MenuItem value="PHONES">Phones</MenuItem>
+                    {selectedCategory &&
+                      subcategories[selectedCategory].map((subcategory) => (
+                        <MenuItem key={subcategory} value={subcategory}>
+                          {subcategory}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
 
+                {/* Status */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Status</InputLabel>
+                  <InputLabel id="status-label">Status</InputLabel>
                   <Select
+                    labelId="status-label"
                     id="status"
                     name="status"
                     label="Status"
-                    onChange={handleSelectChange}
-                    value={formValues.status}
                   >
                     <MenuItem value="AVAILABLE">Available</MenuItem>
                     <MenuItem value="SOLD">Sold</MenuItem>
+                    <MenuItem value="RESERVED">Reserved</MenuItem>
                   </Select>
                 </FormControl>
 
                 {/* Transaction Type */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
-                  <InputLabel>Transaction Type</InputLabel>
+                  <InputLabel id="transactionType-label">
+                    Transaction Type
+                  </InputLabel>
                   <Select
+                    labelId="transactionType-label"
                     id="transactionType"
                     name="transactionType"
                     label="Transaction Type"
-                    onChange={handleSelectChange}
-                    value={formValues.transactionType}
                   >
                     <MenuItem value="SALE">Sale</MenuItem>
-                    <MenuItem value="BARTER">Barter</MenuItem>
+                    <MenuItem value="EXCHANGE">Exchange</MenuItem>
+                    <MenuItem value="GIVEN_AWAY">Give away</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -358,11 +390,10 @@ function AddProductPage() {
                   onClick={handleZoneClick}
                   sx={{
                     cursor: 'pointer',
-                    border: `2px dashed ${
-                      isDragging
-                        ? theme.palette.primary.main
-                        : theme.palette.grey[400]
-                    }`,
+                    border: `2px dashed ${isDragging
+                      ? theme.palette.primary.main
+                      : theme.palette.grey[400]
+                      }`,
                     borderRadius: 2,
                     height: 100,
                     display: 'flex',

@@ -15,18 +15,29 @@ import { useApi } from '../apiContext';
 
 import ProductCard from '../home-page/ProductCard';
 import { ProductDto } from '../EcoWebClient';
+import { useNavigate } from 'react-router-dom';
+import { isTokenExpired } from '../utils/authUtils';
 
 export default function ShoppingPage() {
   // Get the client from context
   const api = useApi();
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState<ProductDto[]>([]);
 
   // State for search, pagination, and filters
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [newCondition, setNewCondition] = useState(false);
-  const [usedCondition, setUsedCondition] = useState(false);
+
+
+  const [selectedConditions, setSelectedConditions] = useState({
+    New: false,
+    Excellent: false,
+    Good: false,
+    Fair: false,
+    Poor: false,
+  });
+
   const [selectedCategories, setSelectedCategories] = useState({
     Furniture: false,
     Food: false,
@@ -38,15 +49,15 @@ export default function ShoppingPage() {
   const [showSearch, setShowSearch] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // const handleClick = () => {
-  //   const token = localStorage.getItem('authToken');
-  //   if (token && !isTokenExpired(token)) {
-  //     navigate('/add-product');
-  //   } else {
-  //     alert('You must be logged in to sell a product. Please log in to continue.');
-  //     navigate('/');
-  //   }
-  // };
+  const handleClick = () => {
+    const token = localStorage.getItem('authToken');
+    if (token && !isTokenExpired(token)) {
+      navigate('/add-product');
+    } else {
+      alert('You must be logged in to sell a product. Please log in to continue.');
+      navigate('/');
+    }
+  };
 
   // Fetch products on mount
   useEffect(() => {
@@ -80,23 +91,13 @@ export default function ShoppingPage() {
   const filteredProducts = products
     .filter((product) => {
       // Category filter
-      const noCategorySelected = Object.values(selectedCategories).every(
-        (val) => !val
-      );
-      const categoryMatches =
+      const categoryCheck =
+        Object.values(selectedCategories).every((isChecked) => !isChecked) ||
         selectedCategories[product.category as keyof typeof selectedCategories];
-      const categoryCheck = noCategorySelected || categoryMatches;
-
-      // Condition filter (Fix: Ensure `product.condition` is defined)
-      const condition = product.condition
-        ? product.condition.toLowerCase()
-        : '';
-      const isNew = condition === 'nowy';
-      const isUsed = condition === 'używany';
+      // Condition filter
       const conditionCheck =
-        (newCondition && isNew) ||
-        (usedCondition && isUsed) ||
-        (!newCondition && !usedCondition);
+        Object.values(selectedConditions).every((isChecked) => !isChecked) ||
+        selectedConditions[product.condition as keyof typeof selectedConditions];
 
       return categoryCheck && conditionCheck;
     })
@@ -129,6 +130,13 @@ export default function ShoppingPage() {
       [category]: !prev[category as keyof typeof selectedCategories],
     }));
     setCurrentPage(1); // reset to page 1 on new filter
+  };
+
+  const handleConditionChange = (condition: string) => {
+    setSelectedConditions((prev) => ({
+      ...prev,
+      [condition]: !prev[condition as keyof typeof selectedConditions],
+    }));
   };
 
   return (
@@ -203,7 +211,7 @@ export default function ShoppingPage() {
           }}
         >
           <Typography variant="h6" sx={{ marginBottom: '20px', color: '#000' }}>
-            Kategorie
+            Category
           </Typography>
           <FormGroup>
             {Object.keys(selectedCategories).map((category) => (
@@ -213,7 +221,7 @@ export default function ShoppingPage() {
                   <Checkbox
                     checked={
                       selectedCategories[
-                        category as keyof typeof selectedCategories
+                      category as keyof typeof selectedCategories
                       ]
                     }
                     onChange={() => handleCategoryChange(category)}
@@ -225,33 +233,25 @@ export default function ShoppingPage() {
           </FormGroup>
 
           <Typography variant="h6" sx={{ mt: 2, mb: 1, color: '#000' }}>
-            Filtruj
+            Condition
           </Typography>
           <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={newCondition}
-                  onChange={(e) => {
-                    setNewCondition(e.target.checked);
-                    setCurrentPage(1);
-                  }}
-                />
-              }
-              label="Nowe"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={usedCondition}
-                  onChange={(e) => {
-                    setUsedCondition(e.target.checked);
-                    setCurrentPage(1);
-                  }}
-                />
-              }
-              label="Używane"
-            />
+            {Object.keys(selectedConditions).map((condition) => (
+              <FormControlLabel
+                key={condition}
+                control={
+                  <Checkbox
+                    checked={
+                      selectedConditions[
+                      condition as keyof typeof selectedConditions
+                      ]
+                    }
+                    onChange={() => handleConditionChange(condition)}
+                  />
+                }
+                label={condition}
+              />
+            ))}
           </FormGroup>
         </Box>
 
