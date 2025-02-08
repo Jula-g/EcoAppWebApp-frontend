@@ -6,10 +6,20 @@ import Typography from '@mui/material/Typography';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Box } from '@mui/material';
+import { isTokenExpired } from '../utils/authUtils';
 
 function MenuAppBar() {
   const [elevate, setElevate] = useState(false);
   const navigate = useNavigate(); // React Router hook for navigation
+
+  const handleClick = () => {
+    const token = localStorage.getItem('authToken');
+    if (token && !isTokenExpired(token)) {
+      navigate('/account');
+    } else {
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -130,7 +140,7 @@ function MenuAppBar() {
               gap: '8px',
               cursor: 'pointer',
             }}
-            onClick={() => navigate('/login')} // Navigate to Login page
+            onClick={handleClick}
           >
             <PersonIcon sx={{ color: '#85A947' }} />
             <Typography

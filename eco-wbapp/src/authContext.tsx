@@ -35,7 +35,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const isTokenValid = await client.verifyToken(token);
 
       if (!isTokenValid) {
+        Copy-new-damian
         console.error('Invalid token received, logging out...');
+
         localStorage.removeItem('authUser');
         localStorage.removeItem('authToken');
         return false;
