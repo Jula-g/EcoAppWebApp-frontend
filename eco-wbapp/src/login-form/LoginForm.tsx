@@ -39,7 +39,7 @@ function LoginForm() {
         console.error('Login failed:', error);
         alert(
           error?.response?.data?.message ||
-            'An error occurred. Please try again.'
+          'An error occurred. Please try again.'
         );
       }
     },

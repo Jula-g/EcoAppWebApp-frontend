@@ -7,6 +7,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Button,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 
@@ -55,7 +56,6 @@ export default function ShoppingPage() {
       navigate('/add-product');
     } else {
       alert('You must be logged in to sell a product. Please log in to continue.');
-      navigate('/');
     }
   };
 
@@ -198,61 +198,95 @@ export default function ShoppingPage() {
           gap: 2,
         }}
       >
-        {/* Sidebar */}
+
         <Box
           sx={{
             width: '20%',
-            backgroundColor: '#fff',
-            padding: '20px',
             borderRadius: '8px',
             position: 'sticky',
             top: '80px',
             height: 'fit-content',
           }}
         >
-          <Typography variant="h6" sx={{ marginBottom: '20px', color: '#000' }}>
-            Category
-          </Typography>
-          <FormGroup>
-            {Object.keys(selectedCategories).map((category) => (
-              <FormControlLabel
-                key={category}
-                control={
-                  <Checkbox
-                    checked={
-                      selectedCategories[
-                      category as keyof typeof selectedCategories
-                      ]
-                    }
-                    onChange={() => handleCategoryChange(category)}
-                  />
-                }
-                label={category}
-              />
-            ))}
-          </FormGroup>
+          <Button
+            onClick={handleClick}
+            variant="contained"
+            sx={{
+              backgroundColor: '#123524',
+              color: '#EFE3C2',
+              padding: '10px',
+              width: '100%',
+              height: 'fit-content',
+              borderRadius: '8px',
+              fontSize: '25px',
+              fontFamily: 'Poppins',
+              elevation: 0,
+              fontWeight: 800,
+              textTransform: 'none',
+              marginBottom: '10px',
+              boxShadow: 'none',
+            }}
+          >
+            Sell product
+          </Button>
 
-          <Typography variant="h6" sx={{ mt: 2, mb: 1, color: '#000' }}>
-            Condition
-          </Typography>
-          <FormGroup>
-            {Object.keys(selectedConditions).map((condition) => (
-              <FormControlLabel
-                key={condition}
-                control={
-                  <Checkbox
-                    checked={
-                      selectedConditions[
-                      condition as keyof typeof selectedConditions
-                      ]
-                    }
-                    onChange={() => handleConditionChange(condition)}
-                  />
-                }
-                label={condition}
-              />
-            ))}
-          </FormGroup>
+
+          {/* Sidebar */}
+          <Box
+            sx={{
+              width: '85%',
+              backgroundColor: '#fff',
+              padding: '20px',
+              borderRadius: '8px',
+              position: 'sticky',
+              top: '80px',
+              height: 'fit-content',
+            }}
+          >
+            <Typography variant="h6" sx={{ marginBottom: '20px', color: '#000' }}>
+              Category
+            </Typography>
+            <FormGroup>
+              {Object.keys(selectedCategories).map((category) => (
+                <FormControlLabel
+                  key={category}
+                  control={
+                    <Checkbox
+                      checked={
+                        selectedCategories[
+                        category as keyof typeof selectedCategories
+                        ]
+                      }
+                      onChange={() => handleCategoryChange(category)}
+                    />
+                  }
+                  label={category}
+                />
+              ))}
+            </FormGroup>
+
+            <Typography variant="h6" sx={{ mt: 2, mb: 1, color: '#000' }}>
+              Condition
+            </Typography>
+            <FormGroup>
+              {Object.keys(selectedConditions).map((condition) => (
+                <FormControlLabel
+                  key={condition}
+                  control={
+                    <Checkbox
+                      checked={
+                        selectedConditions[
+                        condition as keyof typeof selectedConditions
+                        ]
+                      }
+                      onChange={() => handleConditionChange(condition)}
+                    />
+                  }
+                  label={condition}
+                />
+              ))}
+            </FormGroup>
+          </Box>
         </Box>
 
         {/* Main products grid */}

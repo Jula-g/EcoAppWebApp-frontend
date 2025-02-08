@@ -40,8 +40,7 @@ export class EcoWebClient {
       baseURL: 'http://localhost:3000/api',
     });
 
-    const token = localStorage.getItem(tokenId);
-
+    const token = localStorage.getItem('authToken');
     if (token) {
       this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -58,45 +57,83 @@ export class EcoWebClient {
     );
   }
 
-  public async logIn(data: {
-    username: string;
-    password: string;
-  }): Promise<ClientResponse<{ token: string } | null>> {
-    try {
-      const response: AxiosResponse<{ token: string }> = await this.client.post(
-        '/auth/login',
-        data
-      );
+  // // Register a new user
+  // async register(
+  //   username: string,
+  //   password: string,
+  //   email: string,
+  //   name: string,
+  //   lastName: string,
+  //   phoneNumber: string
+  // ) {
+  //   return this.api.post('/auth/register', {
+  //     username,
+  //     password,
+  //     email,
+  //     name,
+  //     lastName,
+  //     phoneNumber,
+  //   });
+  // }
 
-      const token = response.data.token;
+  // public async logIn(data: {
+  //   username: string;
+  //   password: string;
+  // }): Promise<ClientResponse<{ token: string } | null>> {
+  //   try {
+  //     const response: AxiosResponse<{ token: string }> = await this.client.post(
+  //       '/auth/login',
+  //       data
+  //     );
 
-      if (token) {
-        localStorage.setItem(tokenId, response.data.token ?? '');
-        this.client.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${token}`;
-      }
+  //     const token = response.data.token;
 
-      return {
-        success: true,
-        data: response.data,
-        status: response.status,
-      };
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError;
-      return {
-        success: false,
-        data: null,
-        status: axiosError.response?.status || 0,
-      };
-    }
-  }
+  //     if (token) {
+  //       localStorage.setItem(tokenId, response.data.token ?? '');
+  //       this.client.defaults.headers.common[
+  //         'Authorization'
+  //       ] = `Bearer ${token}`;
+  //     }
 
+  //     return {
+  //       success: true,
+  //       data: response.data,
+  //       status: response.status,
+  //     };
+  //   } catch (error: unknown) {
+  //     const axiosError = error as AxiosError;
+  //     return {
+  //       success: false,
+  //       data: null,
+  //       status: axiosError.response?.status || 0,
+  //     };
+  //   }
+  // }
+
+  // async login(username: string, password: string) {
+  //   const response = await this.client.post('/auth/login', {
+  //     username,
+  //     password,
+  //   });
+
+  //   console.log('response:', response);
+
+  //   const token = response.data.data.token; // Extract token from response
+  //   const userId = response.data.data.userId;
+
+  //   const userData = await this.getUser(userId); // Get user info using userId
+  //   console.log('user:', userData);
+
+  //   // localStorage.setItem('authUser', userData); // Save user data to local storage
+  //   // localStorage.setItem('authToken', token); // Save token to local storage
+  //   this.client.defaults.headers.Authorization = `Bearer ${token}`; // Update Axios headers
+
+  //   return { userData, token }; // Return user and token
+  // }
+
+  // Login an existing user
   async login(username: string, password: string) {
-    const response = await this.client.post('/auth/login', {
-      username,
-      password,
-    });
+    const response = await this.client.post('/auth/login', { username, password });
 
     console.log('response:', response);
 
@@ -106,8 +143,9 @@ export class EcoWebClient {
     const userData = await this.getUser(userId); // Get user info using userId
     console.log('user:', userData);
 
-    // localStorage.setItem('authUser', userData); // Save user data to local storage
-    // localStorage.setItem('authToken', token); // Save token to local storage
+    localStorage.clear();
+    localStorage.setItem('authUser', JSON.stringify(userData)); // Save user data to local storage
+    localStorage.setItem('authToken', token); // Save token to local storage
     this.client.defaults.headers.Authorization = `Bearer ${token}`; // Update Axios headers
 
     return { userData, token }; // Return user and token
@@ -159,8 +197,10 @@ export class EcoWebClient {
     }
   }
 
+
   public logout(): void {
-    localStorage.removeItem(tokenId);
+    localStorage.removeItem('authToken'); // Remove token
+    localStorage.removeItem('authUser');
     delete this.client.defaults.headers.common['Authorization'];
   }
 

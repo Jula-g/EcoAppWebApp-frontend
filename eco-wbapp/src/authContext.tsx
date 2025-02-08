@@ -9,7 +9,7 @@ type User = {
 };
 
 type AuthContextType = {
-  user: User | null;
+  // user: User | null;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
 };
@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
   const client = new EcoWebClient();
 
   // Function to persist login state
@@ -29,6 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   ): Promise<boolean> => {
     try {
       const { userData, token } = await client.login(username, password);
+      console.log('API response:', { userData, token });
       console.log('User data:', userData);
 
       // validate token
@@ -41,11 +42,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return false;
       }
 
-      setUser(userData);
-      localStorage.setItem('authToken', JSON.stringify(token));
-      localStorage.setItem('authUser', JSON.stringify(user)); // Save user in localStorage
-      console.log('saves user:', JSON.stringify(user));
-      console.log('User logged in:', user);
+      // setUser(userData);
+      console.log('User logged in:', userData);
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -57,23 +55,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = () => {
     client.logout();
-    setUser(null);
+    // setUser(null);
     localStorage.removeItem('authUser');
     localStorage.removeItem('authToken');
     console.log('User logged out');
   };
 
   useEffect(() => {
+    localStorage.clear();
     const storedUser = localStorage.getItem('authUser');
     console.log('Stored user:', storedUser);
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      // setUser(JSON.parse(storedUser));
       console.log('User session restored:', JSON.parse(storedUser));
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ login, logout }}>
       {children}
     </AuthContext.Provider>
   );

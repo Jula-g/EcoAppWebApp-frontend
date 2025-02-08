@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, Divider } from '@mui/material';
+import { Box, Typography, Button, Divider, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../authContext';
+import { useApi } from '../apiContext';
 
 function AccountPage() {
-  const { user, logout } = useAuth();
+
+  // const { logout } = useAuth();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
 
+  const apiClient = useApi();
+
+  const user = JSON.parse(localStorage.getItem('authUser') || '{}');
+
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    apiClient.logout();
+    setOpenSnackbar(true); // Show the popup when logging out
+    setTimeout(() => {
+      navigate('/login'); // Redirect after the popup closes
+    }, 1000);
   };
 
   const navigateToHomePage = () => {
     navigate('/');
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -69,6 +83,7 @@ function AccountPage() {
             </Typography>
             <Divider sx={{ width: '300px', marginBottom: '20px' }} />
 
+
             {/* User Info */}
             <Box
               sx={{
@@ -101,6 +116,13 @@ function AccountPage() {
           </Box>
         </Box>
       </Box>
+
+      <Snackbar
+        open={openSnackbar}
+        message="You have been logged out"
+        autoHideDuration={1000} // Automatically hide after 3 seconds
+        onClose={handleCloseSnackbar}
+      />
     </>
   );
 }
