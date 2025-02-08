@@ -12,6 +12,7 @@ import ApiProvider from './apiContext';
 // import { AuthProvider } from './authContext';
 import AccountPage from './account-page/AccountPage';
 import UserProductPage from './user-products/UserProducts';
+import UpdateProductPage from './updateProduct-page';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/add-product" element={<AddProductPage />} />
+          <Route path="/update-product" element={<UpdateProductPage />} />
           <Route path="/offered-products" element={<UserProductPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/tinder" element={<MatchMe />} />

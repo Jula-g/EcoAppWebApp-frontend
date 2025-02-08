@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { CreateProductDto, ShopProductDto } from './Dtos/Products';
 
 export interface ProductDto {
+  id: string;
   name: string;
   category: string;
   subcategory: string;
@@ -135,6 +136,7 @@ export class EcoWebClient {
       const response: AxiosResponse<ProductDto[]> = await this.client.get(
         '/products'
       );
+
       return {
         success: true,
         data: response.data,
@@ -209,9 +211,9 @@ export class EcoWebClient {
     }
   }
 
-  public async deleteProduct(productId: string): Promise<ClientResponse<null>> {
+  public async deleteProduct(userId: string, productId: string): Promise<ClientResponse<null>> {
     try {
-      const response: AxiosResponse = await this.client.delete(`/products/${productId}`);
+      const response: AxiosResponse = await this.client.delete(`/products/${userId}/${productId}`);
       return {
         success: true,
         data: null,
@@ -279,7 +281,7 @@ export class EcoWebClient {
     }
   }
 
-  async getProductsByUserId(userId: string): Promise<ClientResponse<ProductDto[] | null>> {
+  public async getProductsByUserId(userId: string): Promise<ClientResponse<ProductDto[] | null>> {
     try {
       const response: AxiosResponse<ProductDto[]> = await this.client.get(`/products/user/${userId}`);
       return {
