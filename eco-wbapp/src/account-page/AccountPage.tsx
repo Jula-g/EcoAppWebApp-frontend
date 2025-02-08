@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Divider, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../authContext';
 import { useApi } from '../apiContext';
+import MenuAppBar from '../menu-bar/MenuAppBar';
 
 function AccountPage() {
-
-  // const { logout } = useAuth();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
 
@@ -26,6 +24,10 @@ function AccountPage() {
     navigate('/');
   };
 
+  const navigateToOfferedProducts = () => {
+    navigate('/offered-products');
+  };
+
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
@@ -34,93 +36,87 @@ function AccountPage() {
     <>
       <Box
         sx={{
+          backgroundColor: '#EFE3C2',
+          height: '100vh',
+          overflow: 'hidden',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          backgroundColor: 'white',
+          flexDirection: 'column',
         }}
       >
+        <MenuAppBar />
         <Box
           sx={{
-            backgroundColor: 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh',
-            width: '1200px',
+            maxWidth: '100%',
+            height: '100vh',
+            padding: '5%',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#EFE3C2',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: '38px',
-              color: 'black',
-              paddingLeft: '55px',
-              marginTop: '20px',
-              cursor: 'pointer',
-            }}
-            onClick={navigateToHomePage}
-          >
-            ECCOGANG
-          </Typography>
-          <Divider
-            sx={{ marginTop: '20px', marginBottom: '20px', width: '100%' }}
-          />
 
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-              backgroundColor: 'white',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
               alignItems: 'center',
+              backgroundColor: '#EFE3C2',
+              width: '100%',
+              marginTop: '40px',
             }}
           >
-            <Typography
-              sx={{ fontSize: '38px', color: 'black', marginTop: '20px' }}
-            >
-              Account
-            </Typography>
-            <Divider sx={{ width: '300px', marginBottom: '20px' }} />
-
-
-            {/* User Info */}
+            {/* Left side with user information */}
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px',
-                backgroundColor: 'white',
-                justifyContent: 'center',
-                alignItems: 'center',
+                gap: '12px',
+                width: '60%',
               }}
             >
-              <Typography variant="h6" sx={{ marginBottom: '10px' }}>
+              <Typography variant="h3" sx={{ fontWeight: 'bold', fontFamily: 'Poppins', color: '#123524' }}>
                 Welcome, {user?.name || 'Guest'}
               </Typography>
-              <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+              <Typography variant="body1" sx={{ fontFamily: 'Poppins', fontSize: '24px', color: '#123524' }}>
                 Email: {user?.email || 'Not provided'}
               </Typography>
 
-              {/* Logout Button */}
+              <Button
+                variant="contained"
+                onClick={navigateToOfferedProducts}
+                sx={{
+                  backgroundColor: '#123524',
+                  color: '#EFE3C2',
+                  marginTop: '20px',
+                  fontFamily: 'Poppins',
+                  fontSize: '20px',
+                  '&:hover': { backgroundColor: '#85A947' },
+                }}
+              >
+                View Your Products
+              </Button>
+
               <Button
                 variant="contained"
                 color="error"
                 onClick={handleLogout}
-                sx={{ marginTop: '20px' }}
+                sx={{
+                  padding: '12px',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                }}
               >
                 Log Out
               </Button>
             </Box>
-            <Divider sx={{ width: '100%', marginTop: '80px' }} />
           </Box>
+          <Divider sx={{ width: '100%', marginTop: '80px' }} />
         </Box>
       </Box>
 
       <Snackbar
         open={openSnackbar}
         message="You have been logged out"
-        autoHideDuration={1000} // Automatically hide after 3 seconds
+        autoHideDuration={1000} // Automatically hide after 1 second
         onClose={handleCloseSnackbar}
       />
     </>

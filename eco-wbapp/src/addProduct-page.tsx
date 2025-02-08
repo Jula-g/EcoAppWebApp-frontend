@@ -61,6 +61,20 @@ function AddProductPage() {
     const { name, value } = event.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    const category = event.target.value;
+    setSelectedCategory(category);
+    setSelectedSubcategory(''); // Reset subcategory when category changes
+    setFormValues((prev) => ({ ...prev, category, subcategory: '' })); // Reset form subcategory
+  };
+
+  const handleSubcategoryChange = (event: SelectChangeEvent<string>) => {
+    const subcategory = event.target.value;
+    setSelectedSubcategory(subcategory);
+    setFormValues((prev) => ({ ...prev, subcategory }));
+  };
+
   /**
    * Handles file selection via input or drag-and-drop
    */
@@ -106,18 +120,23 @@ function AddProductPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const userId = 'MRgrch6uUdse4xDQUJLQ';
+    const user = JSON.parse(localStorage.getItem('authUser') || '{}');
+    // 'MRgrch6uUdse4xDQUJLQ'
+    const userId = user.userId;
     const formData = new FormData();
 
     // Append form fields
     Object.keys(formValues).forEach((key) => {
       const value = formValues[key as keyof typeof formValues];
+      console.log(key, value);
       if (typeof value === 'object') {
         formData.append(key, JSON.stringify(value)); // Convert address to JSON string
       } else {
         formData.append(key, value);
       }
     });
+
+
 
     // Append images as files
     selectedImages.forEach((image) => {
@@ -146,8 +165,8 @@ function AddProductPage() {
           adress: { street: '', city: '', zip: '' },
         });
         setSelectedImages([]);
-      }
-      if (response.status === 403) {
+        navigate('/shop-page');
+      } else if (response.status === 403) {
         alert('You are not authorized to create a product.');
       } else {
         alert('Failed to create product.');
@@ -241,7 +260,7 @@ function AddProductPage() {
                 {/* Condition */}
                 <FormControl fullWidth required sx={{ mb: 2 }}>
                   <InputLabel id="condition-label">Condition</InputLabel>
-                  <Select labelId="condition-label" id="condition" name="condition" label="Condition">
+                  <Select labelId="condition-label" id="condition" name="condition" label="Condition" value={formValues.condition} onChange={handleSelectChange}>
                     {conditions.map((condition) => (
                       <MenuItem key={condition} value={condition}>
                         {condition}
@@ -258,11 +277,7 @@ function AddProductPage() {
                     id="category"
                     name="category"
                     label="Category"
-                    value={selectedCategory}
-                    onChange={(e) => {
-                      setSelectedCategory(e.target.value);
-                      setSelectedSubcategory("");
-                    }}
+                    value={selectedCategory} onChange={handleCategoryChange}
                   >
                     {categories.map((category) => (
                       <MenuItem key={category} value={category}>
@@ -280,8 +295,7 @@ function AddProductPage() {
                     id="subcategory"
                     name="subcategory"
                     label="Subcategory"
-                    value={selectedSubcategory}
-                    onChange={(e) => setSelectedSubcategory(e.target.value)}
+                    value={selectedSubcategory} onChange={handleSubcategoryChange}
                   >
                     {selectedCategory &&
                       subcategories[selectedCategory].map((subcategory) => (
@@ -300,9 +314,11 @@ function AddProductPage() {
                     id="status"
                     name="status"
                     label="Status"
+                    value={formValues.status}
+                    onChange={handleSelectChange}
                   >
                     <MenuItem value="AVAILABLE">Available</MenuItem>
-                    <MenuItem value="SOLD">Sold</MenuItem>
+                    {/* <MenuItem value="SOLD">Sold</MenuItem> */}
                     <MenuItem value="RESERVED">Reserved</MenuItem>
                   </Select>
                 </FormControl>
@@ -317,6 +333,8 @@ function AddProductPage() {
                     id="transactionType"
                     name="transactionType"
                     label="Transaction Type"
+                    value={formValues.transactionType}
+                    onChange={handleSelectChange}
                   >
                     <MenuItem value="SALE">Sale</MenuItem>
                     <MenuItem value="EXCHANGE">Exchange</MenuItem>
@@ -470,7 +488,7 @@ function AddProductPage() {
             </Grid>
           </Box>
         </Box>
-      </Box>
+      </Box >
     </>
   );
 }
