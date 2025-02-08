@@ -58,7 +58,7 @@ export class EcoWebClient {
     );
   }
 
-  public async login(data: {
+  public async logIn(data: {
     username: string;
     password: string;
   }): Promise<ClientResponse<{ token: string } | null>> {
@@ -92,7 +92,27 @@ export class EcoWebClient {
     }
   }
 
-<<<<<<< HEAD
+  async login(username: string, password: string) {
+    const response = await this.client.post('/auth/login', {
+      username,
+      password,
+    });
+
+    console.log('response:', response);
+
+    const token = response.data.data.token; // Extract token from response
+    const userId = response.data.data.userId;
+
+    const userData = await this.getUser(userId); // Get user info using userId
+    console.log('user:', userData);
+
+    localStorage.setItem('authUser', userData); // Save user data to local storage
+    localStorage.setItem('authToken', token); // Save token to local storage
+    this.client.defaults.headers.Authorization = `Bearer ${token}`; // Update Axios headers
+
+    return { userData, token }; // Return user and token
+  }
+
   public async register(payload: {
     username: string;
     password: string;
@@ -119,25 +139,6 @@ export class EcoWebClient {
         status: axiosError.response?.status || 0,
       };
     }
-=======
-  // Login an existing user
-  async login(username: string, password: string) {
-    const response = await this.api.post('/auth/login', { username, password });
-
-    console.log('response:', response);
-
-    const token = response.data.data.token; // Extract token from response
-    const userId = response.data.data.userId;
-
-    const userData = await this.getUser(userId); // Get user info using userId
-    console.log('user:', userData);
-
-    localStorage.setItem('authUser', userData); // Save user data to local storage
-    localStorage.setItem('authToken', token); // Save token to local storage
-    this.api.defaults.headers.Authorization = `Bearer ${token}`; // Update Axios headers
-
-    return { userData, token }; // Return user and token
->>>>>>> ee92269173d0e3fb3a846e7b3f7a27231a311af5
   }
 
   public async getProducts(): Promise<ClientResponse<any[] | null>> {
@@ -234,7 +235,7 @@ export class EcoWebClient {
 
   async getUser(userId: string) {
     try {
-      const response = await this.api.get(`/users/${userId}`); // Call backend API
+      const response = await this.client.get(`/users/${userId}`); // Call backend API
       return response.data; // Return user data
     } catch (error) {
       console.error('Error fetching user:', error);
@@ -245,7 +246,7 @@ export class EcoWebClient {
   async verifyToken(token: string): Promise<boolean> {
     try {
       // Make a request to verify token on the backend
-      await this.api.get('/auth/verify-token', {
+      await this.client.get('/auth/verify-token', {
         headers: { Authorization: `Bearer ${token}` },
       });
       return true; // Token is valid

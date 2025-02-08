@@ -10,11 +10,25 @@ import { useApi } from '../apiContext';
 function LoginForm() {
   const navigate = useNavigate();
 
-  // Handle form submission
+  const apiClient = useApi();
+
+  // let onSubmit = useCallback(
+  //   (values: { username: string; password: string }, formik: any) => {
+  //     apiClient.login(values).then((response) => {
+  //       if (response.success) {
+  //         navigate('/home-page');
+  //       } else {
+  //         formik.setFieldError('username', 'Invalid username or password');
+  //       }
+  //     });
+  //   },
+  //   [apiClient, navigate]
+  // );
+
   const onSubmit = useCallback(
-    async (values: { username: string; password: string }) => {
+    async (values: { username: string; password: string }, formik: any) => {
       try {
-        const success = await login(values.username, values.password); // Call login
+        const success = await apiClient.login(values.username, values.password); // Call login
         if (success) {
           console.log('Login successful!');
           navigate('/'); // Redirect to home page after successful login
