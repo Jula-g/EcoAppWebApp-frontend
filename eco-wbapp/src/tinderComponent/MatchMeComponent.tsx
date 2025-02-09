@@ -33,12 +33,6 @@ const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex, tri
     }
   }, [triggerSwipe, x, products, currentProductIndex]);
 
-  // useEffect(() => {
-  //   if (products.length > 0) {
-  //     handleCardSwipe(triggerSwipe, products[currentProductIndex].id);
-  //   }
-  // }, [triggerSwipe]);
-
   const handleCardSwipe = async (x: number, productId: string) => {
     if (x > 50) {
       // Right Swipe: Like Product
@@ -53,7 +47,6 @@ const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex, tri
           if (response.data.isMatch) {
             console.log('It’s a match!');
 
-            // TODO: get username from ownerId and product name from reverseProductId 
             const reverseProduct = await apiClient.getProductById(response.data.reverseProductId);
             const owner = await apiClient.getUserByFirebaseUid(response.data.ownerId);
 
@@ -69,7 +62,6 @@ const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex, tri
       }
     }
 
-    // Move to next product regardless of swipe direction
     setCurrentProductIndex((prevIndex) => (prevIndex + 1) % products.length);
   };
 
@@ -109,7 +101,6 @@ const CardItem = ({
   triggerSwipe: number;
   x: any,
 }) => {
-  // const x = useMotionValue(0);
   const opacity = useTransform(x, [-100, 0, 100], [0, 1, 0]);
   const rotate = useTransform(x, [-100, 0, 100], [-18, 0, 18]);
 
