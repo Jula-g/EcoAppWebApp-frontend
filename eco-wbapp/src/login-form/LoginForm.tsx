@@ -9,21 +9,7 @@ import { useApi } from '../apiContext';
 
 function LoginForm() {
   const navigate = useNavigate();
-
   const apiClient = useApi();
-
-  // let onSubmit = useCallback(
-  //   (values: { username: string; password: string }, formik: any) => {
-  //     apiClient.login(values).then((response) => {
-  //       if (response.success) {
-  //         navigate('/home-page');
-  //       } else {
-  //         formik.setFieldError('username', 'Invalid username or password');
-  //       }
-  //     });
-  //   },
-  //   [apiClient, navigate]
-  // );
 
   const onSubmit = useCallback(
     async (values: { username: string; password: string }, formik: any) => {
@@ -39,7 +25,7 @@ function LoginForm() {
         console.error('Login failed:', error);
         alert(
           error?.response?.data?.message ||
-            'An error occurred. Please try again.'
+          'An error occurred. Please try again.'
         );
       }
     },
