@@ -203,7 +203,7 @@ export class EcoWebClient {
 
   async getUser(userId: string) {
     try {
-      const response = await this.client.get(`/users/${userId}`); // Call backend API
+      const response = await this.client.get(`/users/${userId}`);
       return response.data; // Return user data
     } catch (error) {
       console.error('Error fetching user:', error);

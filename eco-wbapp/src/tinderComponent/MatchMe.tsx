@@ -12,6 +12,7 @@ export default function MatchMe() {
   const api = useApi();
   const [products, setProducts] = useState<ProductDto[]>([]);
   const [currentProductIndex, setCurrentProductIndex] = useState<number>(0); // Track the current product index
+  const [triggerSwipe, setTriggerSwipe] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
@@ -147,9 +148,10 @@ export default function MatchMe() {
                 color: '#fff',
                 padding: '10px',
                 '&:hover': {
-                  backgroundColor: '#A63D40 ',
+                  backgroundColor: '#D04B47',
                 },
               }}
+              onClick={() => setTriggerSwipe(triggerSwipe - 1)}
             >
               <CloseIcon sx={{ fontSize: '80px' }} />
             </IconButton>
@@ -166,9 +168,10 @@ export default function MatchMe() {
                 color: '#fff',
                 padding: '20px',
                 '&:hover': {
-                  backgroundColor: '#85A947',
+                  backgroundColor: '#6B9A3B',
                 },
               }}
+              onClick={() => setTriggerSwipe(triggerSwipe + 1)}
             >
               <FavoriteIcon sx={{ fontSize: '60px' }} />
             </IconButton>
@@ -178,6 +181,7 @@ export default function MatchMe() {
               products={products}
               currentProductIndex={currentProductIndex}
               setCurrentProductIndex={setCurrentProductIndex}
+              triggerSwipe={triggerSwipe}
             />
           </Box>
         </Box>
