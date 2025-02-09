@@ -1,17 +1,43 @@
-import React from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 import { ProductDto } from '../EcoWebClient';
 import { useApi } from '../apiContext';
 
 interface SwipeCardsProps {
   products: ProductDto[];
   currentProductIndex: number;
-  setCurrentProductIndex: React.Dispatch<React.SetStateAction<number>>; // Update current product index
+  setCurrentProductIndex: React.Dispatch<React.SetStateAction<number>>;
+  triggerSwipe: number;
 }
 
-const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex }: SwipeCardsProps) => {
-
+const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex, triggerSwipe }: SwipeCardsProps) => {
+  const prevTriggerSwipe = useRef(triggerSwipe);
   const apiClient = useApi();
+  const x = useMotionValue(0);
+
+  useEffect(() => {
+    if (triggerSwipe !== prevTriggerSwipe.current) {
+      const swipeDirection = triggerSwipe > prevTriggerSwipe.current ? 1 : -1; // 1 = right, -1 = left
+      prevTriggerSwipe.current = triggerSwipe;
+
+      // Animate swipe effect
+      animate(x, swipeDirection * 200, {
+        type: 'spring',
+        stiffness: 300,
+        damping: 20,
+        onComplete: () => {
+          handleCardSwipe(swipeDirection * 200, products[currentProductIndex].id);
+          x.set(0); // Reset position after swipe
+        },
+      });
+    }
+  }, [triggerSwipe, x, products, currentProductIndex]);
+
+  // useEffect(() => {
+  //   if (products.length > 0) {
+  //     handleCardSwipe(triggerSwipe, products[currentProductIndex].id);
+  //   }
+  // }, [triggerSwipe]);
 
   const handleCardSwipe = async (x: number, productId: string) => {
     if (x > 50) {
@@ -64,6 +90,8 @@ const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex }: S
           key={products[currentProductIndex].id}
           product={products[currentProductIndex]}
           handleCardSwipe={handleCardSwipe}
+          triggerSwipe={triggerSwipe}
+          x={x}
         />
       )}
     </div>
@@ -73,11 +101,15 @@ const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex }: S
 const CardItem = ({
   product,
   handleCardSwipe,
+  triggerSwipe,
+  x,
 }: {
   product: ProductDto;
   handleCardSwipe: (x: number, productId: string) => void;
+  triggerSwipe: number;
+  x: any,
 }) => {
-  const x = useMotionValue(0);
+  // const x = useMotionValue(0);
   const opacity = useTransform(x, [-100, 0, 100], [0, 1, 0]);
   const rotate = useTransform(x, [-100, 0, 100], [-18, 0, 18]);
 
