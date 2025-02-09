@@ -299,6 +299,62 @@ export class EcoWebClient {
     }
   }
 
+  public async likeProduct(productId: string, userId: string): Promise<ClientResponse<any>> {
+    try {
+      const response = await this.client.post(`/matches/like/${productId}`, { userId });
+      return {
+        success: true,
+        data: response.data,
+        status: response.status,
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      return {
+        success: false,
+        data: null,
+        status: axiosError.response?.status || 0,
+      };
+    }
+  }
+
+  public async getUserByFirebaseUid(firebaseUid: string): Promise<ClientResponse<any | null>> {
+    try {
+      const response: AxiosResponse = await this.client.get(`/users/${firebaseUid}`);
+      return {
+        success: true,
+        data: response.data,
+        status: response.status,
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      return {
+        success: false,
+        data: null,
+        status: axiosError.response?.status || 0,
+      };
+    }
+  }
+
+
+  public async getProductById(productId: string): Promise<ClientResponse<ProductDto | null>> {
+    try {
+      const response: AxiosResponse<ProductDto> = await this.client.get(`/products/${productId}`);
+      return {
+        success: true,
+        data: response.data,
+        status: response.status,
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      return {
+        success: false,
+        data: null,
+        status: axiosError.response?.status || 0,
+      };
+    }
+  }
+
+
   async verifyToken(token: string): Promise<boolean> {
     try {
       // Make a request to verify token on the backend

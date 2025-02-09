@@ -317,9 +317,9 @@ function AddProductPage() {
                     value={formValues.status}
                     onChange={handleSelectChange}
                   >
-                    <MenuItem value="AVAILABLE">Available</MenuItem>
+                    <MenuItem value="Available">Available</MenuItem>
                     {/* <MenuItem value="SOLD">Sold</MenuItem> */}
-                    <MenuItem value="RESERVED">Reserved</MenuItem>
+                    <MenuItem value="Reserved">Reserved</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -336,9 +336,9 @@ function AddProductPage() {
                     value={formValues.transactionType}
                     onChange={handleSelectChange}
                   >
-                    <MenuItem value="SALE">Sale</MenuItem>
-                    <MenuItem value="EXCHANGE">Exchange</MenuItem>
-                    <MenuItem value="GIVEN_AWAY">Give away</MenuItem>
+                    <MenuItem value="Sale">Sale</MenuItem>
+                    <MenuItem value="Exchange">Exchange</MenuItem>
+                    <MenuItem value="Give away">Give away</MenuItem>
                   </Select>
                 </FormControl>
 

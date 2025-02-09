@@ -1,97 +1,107 @@
-import React, { Dispatch, useEffect, useState } from 'react';
+import React from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { ProductDto } from '../EcoWebClient';
+import { useApi } from '../apiContext';
 
-const SwipeCards = () => {
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+interface SwipeCardsProps {
+  products: ProductDto[];
+  currentProductIndex: number;
+  setCurrentProductIndex: React.Dispatch<React.SetStateAction<number>>; // Update current product index
+}
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+const SwipeCards = ({ products, currentProductIndex, setCurrentProductIndex }: SwipeCardsProps) => {
+
+  const apiClient = useApi();
+
+  const handleCardSwipe = async (x: number, productId: string) => {
+    if (x > 50) {
+      // Right Swipe: Like Product
+      const userId = JSON.parse(localStorage.getItem('authUser') || '{}').userId;
+      if (!userId) return;
+
       try {
-        const response = await fetch("http://localhost:3001/api/products");
-        const data = await response.json();
-        console.log("Fetched Products:", data);
-        setProducts(data);
+        const response = await apiClient.likeProduct(productId, userId);
+        console.log('response:', response)
+
+        if (response.success) {
+          if (response.data.isMatch) {
+            console.log('It’s a match!');
+
+            // TODO: get username from ownerId and product name from reverseProductId 
+            const reverseProduct = await apiClient.getProductById(response.data.reverseProductId);
+            const owner = await apiClient.getUserByFirebaseUid(response.data.ownerId);
+
+            alert(`You’ve matched with ${owner.data.name}, they liked your product: ${reverseProduct.data?.name}`)
+          } else {
+            console.log('Product liked.');
+          }
+        } else {
+          console.error('Failed to like the product');
+        }
       } catch (error) {
-        setError("Failed to load products.");
-      } finally {
-        setLoading(false);
+        console.error('Error liking product:', error);
       }
-    };
+    }
 
-    fetchProducts();
-  }, []);
-
-  const [cards, setCards] = useState<Card[]>(products);
+    // Move to next product regardless of swipe direction
+    setCurrentProductIndex((prevIndex) => (prevIndex + 1) % products.length);
+  };
 
   return (
     <div
       style={{
         position: 'relative',
+        bottom: '10%',
+        left: '50%',
+        transform: 'translateX(-50%)',
         width: '450px',
         height: '550px',
         margin: 'auto',
       }}
     >
-      {cards.map((card, index) => (
+      {products.length > 0 && (
         <CardItem
-          key={card.id}
-          cards={cards}
-          setCards={setCards}
-          {...card}
-          index={index}
+          key={products[currentProductIndex].id}
+          product={products[currentProductIndex]}
+          handleCardSwipe={handleCardSwipe}
         />
-      ))}
+      )}
     </div>
   );
 };
 
 const CardItem = ({
-  id,
-  name,
-  description,
-  image,
-  cards,
-  setCards,
-  index,
+  product,
+  handleCardSwipe,
 }: {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  setCards: Dispatch<React.SetStateAction<Card[]>>;
-  cards: Card[];
-  index: number;
+  product: ProductDto;
+  handleCardSwipe: (x: number, productId: string) => void;
 }) => {
   const x = useMotionValue(0);
-
   const opacity = useTransform(x, [-100, 0, 100], [0, 1, 0]);
   const rotate = useTransform(x, [-100, 0, 100], [-18, 0, 18]);
 
   const handleDragEnd = () => {
-    if (Math.abs(x.get()) > 50) {
-      setCards((pv) => pv.filter((v) => v.id !== id));
-    }
+    handleCardSwipe(x.get(), product.id);
   };
 
   return (
     <motion.div
       style={{
-        position: 'absolute', // Stack the cards on top of each other
+        position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: cards.length - index, // Higher z-index for the topmost card
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        transform: 'scale(0.85)',
       }}
     >
       <motion.img
-        src={image}
-        alt={name}
+        src={product.images[0]} // display 1st image
+        alt={product.name}
         style={{
           width: '100%',
           height: '100%',
@@ -106,40 +116,24 @@ const CardItem = ({
         dragConstraints={{ left: 0, right: 0 }}
         onDragEnd={handleDragEnd}
       />
+      <motion.div
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          color: '#fff',
+          fontWeight: 'bold',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          padding: '0px 10px',
+          borderRadius: '12px',
+          fontSize: '40px', // Smaller font size for price
+        }}
+      >
+        ${product.price}
+      </motion.div>
     </motion.div>
   );
 };
 
 export default SwipeCards;
-
-type Card = {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-};
-
-// const cardData: Card[] = [
-//   {
-//     id: '1',
-//     name: 'Lamp',
-//     description: 'A modern desk lamp with a sleek design.',
-//     image:
-//       'https://m.media-amazon.com/images/I/61uLmGqbcVL._AC_UF894,1000_QL80_.jpg',
-//   },
-//   {
-//     id: '2',
-//     name: 'Desk',
-//     description: 'A wooden desk for your workspace.',
-//     image:
-//       'https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/1c05d022-41c2-4072-8915-f3ac72780be0._SL480_.jpg',
-//   },
-//   {
-//     id: '3',
-//     name: 'Chair',
-//     description: 'An ergonomic chair for your workspace.',
-//     image:
-//       'https://m.media-amazon.com/images/I/812Dxg5J9CL._AC_UF1000,1000_QL80_.jpg',
-//   },
-// ];
-

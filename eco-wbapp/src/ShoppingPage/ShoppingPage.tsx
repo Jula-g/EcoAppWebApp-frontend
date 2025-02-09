@@ -42,7 +42,8 @@ export default function ShoppingPage() {
   const [selectedCategories, setSelectedCategories] = useState({
     Furniture: false,
     Food: false,
-    Clothes: false,
+    "Women's Clothing": false,
+    "Men's Clothing": false,
     Electronics: false,
   });
 

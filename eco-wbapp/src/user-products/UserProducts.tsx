@@ -21,7 +21,7 @@ export default function UserProductPage() {
         // Re-fetch products after deletion
         const fetchProducts = async () => {
             try {
-                const response = await apiClient.getAllProducts();
+                const response = await apiClient.getProductsByUserId(userId);
                 if (response.success) {
                     setProducts(response.data ?? []);
                 }
